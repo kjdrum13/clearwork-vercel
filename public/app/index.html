@@ -300,6 +300,27 @@
     .vision-header { padding-left: 16px; padding-right: 16px; }
     .price-row { flex-direction: column; }
   }
+
+  /* ── UPGRADE GATE ── */
+  .upgrade-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9000; padding: 24px;
+  }
+  .upgrade-overlay.hidden { display: none; }
+  .upgrade-card {
+    background: var(--paper); border: 1px solid var(--rule);
+    border-radius: 12px; padding: 36px 32px; max-width: 400px;
+    width: 100%; text-align: center;
+  }
+  .upgrade-icon { font-size: 28px; margin-bottom: 16px; }
+  .upgrade-title { font-family: var(--user-font); font-size: 22px; font-weight: 400; margin-bottom: 10px; color: var(--ink); }
+  .upgrade-sub { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; }
+  .upgrade-actions { display: flex; flex-direction: column; gap: 10px; }
+  .upgrade-actions .btn-primary { justify-content: center; }
+  .upgrade-dismiss { font-size: 13px; color: var(--muted); background: none; border: none; cursor: pointer; padding: 8px; }
+  .upgrade-dismiss:hover { color: var(--ink); }
+
 </style>
 </head>
 <body>
@@ -1933,6 +1954,100 @@ if (inTrial) {
     showScreen('splash');
   }
 }
+
+
+// ═══════════════════════════════════
+// TIER GATING
+// ═══════════════════════════════════
+
+function cwIsPaid() {
+  return !!localStorage.getItem('clearwork_paid') || !!localStorage.getItem('cw-paid');
+}
+
+function cwShowUpgrade(title, sub) {
+  document.getElementById('upgrade-title').textContent = title || 'Unlock unlimited access';
+  document.getElementById('upgrade-sub').textContent = sub || 'Upgrade to Clearwork to continue.';
+  document.getElementById('upgrade-gate').classList.remove('hidden');
+}
+
+function cwDismissUpgrade() {
+  document.getElementById('upgrade-gate').classList.add('hidden');
+}
+
+function cwUpgradeRedirect() {
+  window.location.href = '/';
+}
+
+// ── Gate: new project (free = 1 active project max) ──────────────
+const _origStartSession = startSession;
+window.startSession = function(fresh) {
+  if (!cwIsPaid() && fresh) {
+    const active = projects.filter(p => p.status === 'active');
+    if (active.length >= 1) {
+      cwShowUpgrade(
+        'One project at a time',
+        'Free users can have one active project. Upgrade to run unlimited projects at once.'
+      );
+      return;
+    }
+  }
+  _origStartSession(fresh);
+};
+
+// ── Gate: new thought checker (paid only) ────────────────────────
+const _origOpenNewThought = openNewThought;
+window.openNewThought = function() {
+  if (!cwIsPaid()) {
+    cwShowUpgrade(
+      'New Thought checker',
+      'Evaluate new ideas against your active project. Available on paid plans.'
+    );
+    return;
+  }
+  _origOpenNewThought();
+};
+
+// ── Gate: weekly reset (free = 1 per week) ───────────────────────
+const _origStartWeeklyReset = startWeeklyReset;
+window.startWeeklyReset = function() {
+  if (!cwIsPaid()) {
+    const lastReset = weeklyResets[weeklyResets.length - 1];
+    const daysSince = lastReset
+      ? Math.floor((Date.now() - new Date(lastReset.date).getTime()) / 86400000)
+      : 999;
+    if (daysSince < 6) {
+      cwShowUpgrade(
+        'Weekly reset',
+        'Free users can reset once per week. Upgrade for unlimited weekly resets and full history.'
+      );
+      return;
+    }
+  }
+  _origStartWeeklyReset();
+};
+
+// ── Mark paid when activateAccess is called ───────────────────────
+const _origActivateAccess = activateAccess;
+window.activateAccess = function() {
+  localStorage.setItem('clearwork_paid', '1');
+  _origActivateAccess();
+};
+
+
 </script>
+
+<!-- UPGRADE GATE MODAL -->
+<div class="upgrade-overlay hidden" id="upgrade-gate">
+  <div class="upgrade-card">
+    <div class="upgrade-icon">✦</div>
+    <h2 class="upgrade-title" id="upgrade-title">Unlock unlimited access</h2>
+    <p class="upgrade-sub" id="upgrade-sub">Upgrade to Clearwork to continue.</p>
+    <div class="upgrade-actions">
+      <button class="btn-primary" onclick="cwUpgradeRedirect()">See plans →</button>
+      <button class="upgrade-dismiss" onclick="cwDismissUpgrade()">Not right now</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
