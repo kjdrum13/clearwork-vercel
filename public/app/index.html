@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0D0D0B">
-<meta name="description" content="Clearwork — vision clarity and 90-day planning for people building something real">
+<meta name="description" content="Clearwork — structured 90-day execution planning for professionals">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Clearwork">
@@ -312,15 +312,15 @@
     </div>
     <div class="splash">
       <p class="eyebrow">Vision Clarity Session</p>
-      <h1 class="splash-title">What are you<br><em>actually</em> building?</h1>
-      <p class="splash-sub">A guided session to cut through the noise and get clear on what you're building, why it matters, and where to start.</p>
-      <button class="btn-primary" onclick="startSession()">Begin session <span style="font-size:18px;line-height:1">→</span></button>
+      <h1 class="splash-title">Define the work.<br><em>Execute</em> the plan.</h1>
+      <p class="splash-sub">Define your project, identify priorities, and build a structured 90-day execution plan.</p>
+      <button class="btn-primary" onclick="startSession()">Start session <span style="font-size:18px;line-height:1">→</span></button>
       <div class="splash-meta">
         <span>✦ 8 questions</span>
         <span>✦ 20–30 min</span>
         <span>✦ Saves automatically</span>
       </div>
-      <p style="font-size:12px;color:var(--muted);margin-top:16px;">Vision session is free. Full access is $12/mo after a 7-day trial.</p>
+      <p style="font-size:12px;color:var(--muted);margin-top:16px;">Start free. Full access is $15/mo.</p>
       <button id="install-btn" class="btn-ghost" onclick="installApp()" style="display:none;margin-top:16px;align-items:center;gap:6px;font-size:12px;">⊕ Add to home screen</button>
     </div>
   </div>
@@ -380,17 +380,17 @@
     </div>
     <div class="paywall">
       <p class="eyebrow">Project Runway</p>
-      <h2 class="paywall-title">Turn your vision into a<br><em style="font-family:var(--user-font)">90-day plan</em></h2>
-      <p class="paywall-sub">A realistic plan built from your answers. Adapts as you learn. Stays out of your way.</p>
+      <h2 class="paywall-title">Build a structured<br><em style="font-family:var(--user-font)">90-day execution plan</em></h2>
+      <p class="paywall-sub">A structured execution system built from your project inputs.</p>
       <div class="paywall-features">
-        <div class="paywall-feature">AI-generated 90-day roadmap from your vision</div>
-        <div class="paywall-feature">Weekly actions — just this week, nothing more</div>
-        <div class="paywall-feature">Milestone sub-tasks you control</div>
-        <div class="paywall-feature">Focus Filter — evaluate tasks and ideas against your active priorities</div>
-        <div class="paywall-feature">Weekly Reset — 5 minutes to stay on track</div>
-        <div class="paywall-feature">Phase reviews that adapt your plan as you learn</div>
-        <div class="paywall-feature">90-day retrospective when you finish</div>
-        <div class="paywall-feature">Customizable workspace — yours, not ours</div>
+        <div class="paywall-feature">AI-generated 90-day execution plan from your inputs</div>
+        <div class="paywall-feature">Weekly priorities — defined, not open-ended</div>
+        <div class="paywall-feature">Milestones and sub-tasks you define and track</div>
+        <div class="paywall-feature">Focus Filter — evaluate tasks against active priorities</div>
+        <div class="paywall-feature">Weekly Reset — review, define, and set priorities</div>
+        <div class="paywall-feature">Phase reviews at each 30-day milestone</div>
+        <div class="paywall-feature">90-day retrospective on completion</div>
+        <div class="paywall-feature">Configurable workspace settings</div>
       </div>
       <div class="price-row">
         <div class="price-card selected" id="price-monthly" onclick="selectPrice('monthly')">
@@ -406,7 +406,7 @@
         </div>
       </div>
       <button class="btn-primary" style="width:100%;max-width:340px;justify-content:center;" onclick="startTrial()">Start free — then $12/mo →</button>
-      <p class="paywall-note">Free for 7 days. After that, $12/month or $97/year. Cancel anytime before trial ends and you won't be charged.</p>
+      <p class="paywall-note">$15/month or $120/year. Cancel anytime.</p>
     </div>
   </div>
 
@@ -422,11 +422,11 @@
     </div>
     <div class="dashboard">
       <div class="dash-section">
-        <p class="dash-section-title">Active projects</p>
+        <p class="dash-section-title">What needs to move forward</p>
         <div id="active-projects"></div>
         <button class="new-thought-btn" onclick="openNewThought()">
           <span style="font-size:16px">✦</span>
-          I have a new thought or idea
+          Focus Filter — evaluate a task or idea
         </button>
       </div>
       <div class="dash-section" id="weekly-reset-section" style="display:none">
@@ -654,12 +654,12 @@
 <div class="modal-overlay" id="modal-new-thought">
   <div class="modal">
     <h3 class="modal-title">Focus filter.</h3>
-    <p class="modal-sub">Enter a thought, task, or idea. Answer the prompts below.</p>
+    <p class="modal-sub">Enter a task or idea. Answer the prompts to evaluate it.</p>
     <textarea class="modal-input" id="new-thought-input" rows="3" placeholder="Enter a task, idea, or thought…"></textarea>
     <div id="focus-prompts" style="display:none;margin:12px 0;padding:12px;background:var(--cream);border-radius:6px;border:1px solid var(--rule);">
       <div style="margin-bottom:10px;"><p style="font-size:12px;font-weight:600;color:var(--ink);margin-bottom:4px;">Is this required right now?</p><textarea class="reset-input" id="fp-required" rows="1" placeholder="Yes / No — and why…" style="min-height:36px;font-size:13px;"></textarea></div>
-      <div style="margin-bottom:10px;"><p style="font-size:12px;font-weight:600;color:var(--ink);margin-bottom:4px;">What is the actual priority?</p><textarea class="reset-input" id="fp-priority" rows="1" placeholder="High / Medium / Low — relative to active work…" style="min-height:36px;font-size:13px;"></textarea></div>
-      <div><p style="font-size:12px;font-weight:600;color:var(--ink);margin-bottom:4px;">What can be ignored?</p><textarea class="reset-input" id="fp-ignore" rows="1" placeholder="What parts of this can be dropped or deferred…" style="min-height:36px;font-size:13px;"></textarea></div>
+      <div style="margin-bottom:10px;"><p style="font-size:12px;font-weight:600;color:var(--ink);margin-bottom:4px;">What is the actual priority?</p><textarea class="reset-input" id="fp-priority" rows="1" placeholder="High / Medium / Low…" style="min-height:36px;font-size:13px;"></textarea></div>
+      <div><p style="font-size:12px;font-weight:600;color:var(--ink);margin-bottom:4px;">What can be ignored?</p><textarea class="reset-input" id="fp-ignore" rows="1" placeholder="What parts can be dropped or deferred…" style="min-height:36px;font-size:13px;"></textarea></div>
     </div>
     <div id="new-thought-verdict" style="display:none"></div>
     <div class="modal-actions" id="new-thought-actions">
@@ -764,14 +764,14 @@ let currentVision = null;
 // QUESTIONS
 // ═══════════════════════════════════
 const QUESTIONS = [
-  { section:'The thing', id:'q-name', text:'Give it a name. What are you calling this thing you\'re building?', hint:'Working title is fine. It doesn\'t need to be final.', placeholder:'The name in my head right now is…' },
-  { section:'The thing', id:'q-what', text:'In one or two sentences — what is it, exactly?', hint:'Pretend you\'re texting a smart friend who\'s never heard of it.', placeholder:'It\'s basically…' },
-  { section:'The thing', id:'q-different', text:'What makes this different from everything else out there?', hint:'Even a small difference counts. What\'s the thing that makes it yours?', placeholder:'The difference is…' },
-  { section:'The person', id:'q-who', text:'Describe the person you\'re building this for. Be specific.', hint:'Age, situation, how they spend their days. The more concrete, the better.', placeholder:'They\'re someone who…' },
-  { section:'The person', id:'q-problem', text:'What keeps them up at night? What\'s the real problem this solves?', hint:'Not the surface problem — the one underneath it.', placeholder:'The real thing they\'re struggling with is…' },
-  { section:'Your why', id:'q-why', text:'Why are you the one to build this?', hint:'What in your life, experience, or perspective makes you right for this?', placeholder:'I know this because…' },
-  { section:'Your why', id:'q-afraid', text:'What\'s the thing you\'re most afraid won\'t work?', hint:'Be honest. This is the thing worth naming.', placeholder:'My honest fear is…' },
-  { section:'The horizon', id:'q-90days', text:'If this goes well, what does 90 days from now look like?', hint:'Be specific and real — not a dream, a milestone.', placeholder:'In 90 days I\'ll know it\'s working if…' }
+  { section:'Project', id:'q-name', text:'What is this project called?', hint:'Working title is acceptable.', placeholder:'Project name…' },
+  { section:'Project', id:'q-what', text:'What does it do? One or two sentences.', hint:'State it plainly. No pitch language.', placeholder:'It is…' },
+  { section:'Project', id:'q-different', text:'What makes this different from existing options?', hint:'Identify a specific, defensible difference.', placeholder:'The difference is…' },
+  { section:'Target', id:'q-who', text:'Who is this for? Be specific.', hint:'Role, situation, context. Concrete over general.', placeholder:'The target user is…' },
+  { section:'Target', id:'q-problem', text:'What problem does this solve?', hint:'State the actual problem, not a symptom.', placeholder:'The problem is…' },
+  { section:'Execution', id:'q-why', text:'Why are you the right person to execute this?', hint:'Relevant experience, access, or advantage.', placeholder:'I am positioned to do this because…' },
+  { section:'Execution', id:'q-afraid', text:'What is the highest-risk assumption in this project?', hint:'The thing that would invalidate the work if wrong.', placeholder:'The key risk is…' },
+  { section:'Execution', id:'q-90days', text:'What does success look like in 90 days?', hint:'Define a measurable outcome, not a direction.', placeholder:'In 90 days, success means…' }
 ];
 const SECTIONS = [...new Set(QUESTIONS.map(q => q.section))];
 
@@ -783,9 +783,9 @@ const TONE_INSTRUCTIONS = {
 
 const WEEKLY_QUESTIONS = [
   { id:'w-completed', section:'Review last week', text:'What was completed?', hint:'Specific deliverables, decisions, or tasks closed.', placeholder:'Completed…' },
-  { id:'w-slipped', section:'Review last week', text:'What slipped?', hint:'What was planned but not done. No justification needed.', placeholder:'Did not complete…' },
+  { id:'w-slipped', section:'Review last week', text:'What slipped?', hint:'What was planned but not done.', placeholder:'Did not complete…' },
   { id:'w-forward', section:'Define this week', text:'What must move forward?', hint:'Non-negotiable progress for this week.', placeholder:'Must move forward…' },
-  { id:'w-wait', section:'Define this week', text:'What can wait?', hint:'Tasks or threads that are low-priority this week.', placeholder:'Can defer…' },
+  { id:'w-wait', section:'Define this week', text:'What can wait?', hint:'Tasks that are low-priority this week.', placeholder:'Can defer…' },
   { id:'w-p1', section:'Set priorities', text:'Priority 1', hint:'', placeholder:'Top priority this week…' },
   { id:'w-p2', section:'Set priorities', text:'Priority 2', hint:'', placeholder:'Second priority…' },
   { id:'w-p3', section:'Set priorities', text:'Priority 3', hint:'', placeholder:'Third priority…' }
@@ -1153,7 +1153,7 @@ function renderDashboard() {
       resetCard.innerHTML =
         '<div class="dash-card" onclick="startWeeklyReset()" style="border-color:var(--user-accent)">' +
           '<div class="dash-card-title">Time for your weekly reset</div>' +
-          '<div class="dash-card-meta"><span>5 minutes. Keep your momentum.</span></div>' +
+          '<div class="dash-card-meta"><span>Review, define, and set priorities.</span></div>' +
         '</div>';
     } else {
       resetCard.innerHTML =
@@ -1229,7 +1229,7 @@ function showRunway(project) {
   '</div>';
 
   if (allDone && daysIn >= 85) {
-    html += '<div class="review-banner"><div class="review-banner-title">90 days done.</div><div class="review-banner-sub">You finished your runway. Time to look back at what you built.</div><button class="btn-primary" onclick="startRetrospective()">Start retrospective →</button></div>';
+    html += '<div class="review-banner"><div class="review-banner-title">90 days complete.</div><div class="review-banner-sub">Run the retrospective to review outcomes and define what comes next.</div><button class="btn-primary" onclick="startRetrospective()">Start retrospective →</button></div>';
   }
 
   // 90-day outcome field
@@ -1239,7 +1239,7 @@ function showRunway(project) {
     '<textarea id="runway-outcome-field" rows="2" placeholder="Define the measurable outcome for this 90-day period…" ' +
     'style="width:100%;background:transparent;border:none;border-bottom:2px solid var(--rule);padding:8px 0;font-family:var(--sans);font-size:14px;color:var(--ink);outline:none;resize:none;line-height:1.6;" ' +
     'onblur="saveRunwayOutcome(' + project.id + ',this.value)">' + savedOutcome + '</textarea>' +
-    '<p style="font-size:11px;color:var(--muted);margin-top:6px;">Saved automatically when you leave the field.</p>' +
+    '<p style="font-size:11px;color:var(--muted);margin-top:6px;">Saved on exit.</p>' +
   '</div>';
 
   if (r.thisWeek && r.thisWeek.length > 0) {
@@ -1314,7 +1314,7 @@ function showRunway(project) {
     '<button class="btn-ghost" onclick="openNewThought()">✦ Focus filter</button>' +
     '<button class="btn-ghost" onclick="startWeeklyReset()">Weekly reset</button>' +
     '</div>' +
-    '<p style="font-size:11px;color:var(--muted);margin-top:8px;padding-bottom:24px;">AI-generated plan based on your vision session answers.</p>';
+    '<p style="font-size:11px;color:var(--muted);margin-top:8px;padding-bottom:24px;">AI-generated execution plan based on your project inputs.</p>';
 
   content.innerHTML = html;
 }
@@ -1512,7 +1512,7 @@ async function startRetrospective() {
         '<button class="btn-primary" onclick="startSession(true)">Start next 90 days →</button>' +
         '<button class="btn-ghost" onclick="showScreen(\'dashboard\');renderDashboard()">Back to dashboard</button>' +
       '</div>' +
-      '<p style="font-size:11px;color:var(--muted);margin-top:8px;">AI-generated retrospective based on your 90-day journey.</p>';
+      '<p style="font-size:11px;color:var(--muted);margin-top:8px;">AI-generated retrospective based on your 90-day execution data.</p>';
   } catch(err) {
     body.innerHTML = '<p style="font-size:14px;color:var(--muted);font-style:italic;padding:16px 0;">Something did not connect. Your work is still saved — please try again.</p><button class="btn-ghost" onclick="startRetrospective()">Try again</button>';
   }
@@ -1529,7 +1529,13 @@ function openNewThought() {
   if (fp) { fp.style.display = 'none'; ['fp-required','fp-priority','fp-ignore'].forEach(function(id){ var el = document.getElementById(id); if(el) el.value = ''; }); }
   document.getElementById('new-thought-actions').innerHTML = '<button class="btn-ghost" onclick="closeNewThought()">Cancel</button><button class="btn-primary" onclick="evaluateNewThought()">Evaluate →</button>';
   document.getElementById('modal-new-thought').classList.add('active');
-  setTimeout(function(){ var inp = document.getElementById('new-thought-input'); if(inp) inp.addEventListener('input', function(){ var fp2 = document.getElementById('focus-prompts'); if(fp2 && inp.value.trim().length > 2) fp2.style.display = 'block'; }); }, 100);
+  setTimeout(function(){
+    var inp = document.getElementById('new-thought-input');
+    if (inp) inp.addEventListener('input', function(){
+      var fp2 = document.getElementById('focus-prompts');
+      if (fp2 && inp.value.trim().length > 2) fp2.style.display = 'block';
+    });
+  }, 100);
 }
 function closeNewThought() { document.getElementById('modal-new-thought').classList.remove('active'); }
 async function evaluateNewThought() {
