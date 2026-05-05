@@ -416,7 +416,7 @@ footer { border-top: 1px solid var(--rule); padding: 32px; }
           <li>Customizable workspace</li>
           <li>7-day free trial</li>
         </ul>
-        <a class="price-cta price-cta-primary" href="https://oddlyuseful.co/checkout/buy/5ffc8171-48ee-4937-9191-1c73f44a7d57">Start 7-day trial →</a>
+        <a class="price-cta price-cta-primary" onclick="cwCheckout('monthly')" style="cursor:pointer">Start 7-day trial →</a>
       </div>
       <div class="price-card">
         <p class="price-name">Annual</p>
@@ -429,7 +429,7 @@ footer { border-top: 1px solid var(--rule); padding: 32px; }
           <li>2 complete 90-day runways</li>
           <li>7-day free trial</li>
         </ul>
-        <a class="price-cta price-cta-ghost" href="https://oddlyuseful.co/checkout/buy/d5ecba1f-056b-4ab7-9d59-2dbbcc09d052">Get annual access →</a>
+        <a class="price-cta price-cta-ghost" onclick="cwCheckout('yearly')" style="cursor:pointer">Get annual access →</a>
       </div>
     </div>
   </div>
@@ -542,6 +542,17 @@ document.querySelectorAll('.step-card, .feature-item, .price-card, .stat-card').
   el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
   observer.observe(el);
 });
+</script>
+<script>
+(function(){
+  var MONTHLY='https://oddlyuseful.co/checkout/buy/5ffc8171-48ee-4937-9191-1c73f44a7d57';
+  var YEARLY='https://oddlyuseful.co/checkout/buy/d5ecba1f-056b-4ab7-9d59-2dbbcc09d052';
+  window.cwCheckout=function(plan){
+    var url=plan==='yearly'?YEARLY:MONTHLY;
+    if(!url){alert("Checkout isn't ready yet.");return;}
+    window.location.href=url;
+  };
+})();
 </script>
 </body>
 </html>
