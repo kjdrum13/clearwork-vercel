@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clearwork — Vision clarity and 90-day planning for people building something real</title>
+<meta name="description" content="Clearwork turns a 20-minute clarity session into a 90-day roadmap — built from your answers, not a template. Free to start.">
+<meta property="og:title" content="Clearwork — What are you actually building?">
+<meta property="og:description" content="A guided session to get clear on what you're building, why it matters, and where to start. Then a 90-day plan to actually do it.">
+<meta property="og:url" content="https://getclearwork.app">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0D0D0B;
+  --cream: #F5F2EC;
+  --cream-dark: #EDE9E0;
+  --paper: #FAFAF7;
+  --rule: #E0DDD6;
+  --muted: #8A8780;
+  --accent: #C4A882;
+  --accent-dark: #9E7A4F;
+  --success: #4A7C59;
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans: 'DM Sans', system-ui, sans-serif;
+  --max: 1100px;
+  --col: 680px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+/* ── NAV ── */
+nav { position: sticky; top: 0; z-index: 100; background: var(--paper); border-bottom: 1px solid var(--rule); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
+.nav-logo { font-family: var(--serif); font-size: 19px; font-weight: 600; letter-spacing: -0.02em; text-decoration: none; color: var(--ink); }
+.nav-logo span { font-style: italic; font-weight: 400; color: var(--muted); }
+.nav-links { display: flex; gap: 32px; align-items: center; }
+.nav-links a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.nav-links a:hover { color: var(--ink); }
+.nav-cta { background: var(--ink); color: var(--paper) !important; padding: 9px 20px; border-radius: 2px; font-weight: 500; letter-spacing: 0.02em; }
+.nav-cta:hover { opacity: 0.85; }
+
+/* ── HERO ── */
+.hero { max-width: var(--max); margin: 0 auto; padding: 96px 32px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.hero-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.hero-label::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--accent); }
+.hero-title { font-family: var(--serif); font-size: clamp(38px, 5vw, 60px); font-weight: 400; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 20px; }
+.hero-title em { font-style: italic; color: var(--accent); }
+.hero-sub { font-size: 17px; color: var(--muted); line-height: 1.65; max-width: 420px; margin-bottom: 36px; }
+.hero-actions { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.btn-primary { display: inline-flex; align-items: center; gap: 10px; background: var(--ink); color: var(--paper); text-decoration: none; border-radius: 2px; padding: 15px 32px; font-family: var(--sans); font-size: 15px; font-weight: 500; letter-spacing: 0.02em; transition: opacity 0.2s, transform 0.15s; }
+.btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+.btn-ghost { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); text-decoration: none; font-size: 13px; padding: 8px 0; transition: color 0.2s; }
+.btn-ghost:hover { color: var(--ink); }
+.hero-note { font-size: 12px; color: var(--muted); }
+.hero-visual { background: var(--cream); border: 1px solid var(--rule); border-radius: 6px; padding: 28px; position: relative; overflow: hidden; }
+.hero-visual::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), transparent); }
+.hv-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+.hv-title { font-family: var(--serif); font-size: 22px; font-weight: 400; margin-bottom: 4px; letter-spacing: -0.01em; }
+.hv-date { font-size: 12px; color: var(--muted); margin-bottom: 24px; }
+.hv-block { margin-bottom: 18px; }
+.hv-block-label { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.hv-block-label::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+.hv-block-text { font-family: var(--serif); font-size: 13px; line-height: 1.7; color: #4a4540; font-style: italic; }
+.hv-actions { border-top: 1px solid var(--rule); padding-top: 16px; margin-top: 8px; }
+.hv-action { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid var(--rule); }
+.hv-action:last-child { border-bottom: none; }
+.hv-action-num { font-family: var(--serif); font-size: 11px; color: var(--muted); min-width: 18px; }
+.hv-action-text { font-size: 12px; color: var(--ink); line-height: 1.5; flex: 1; }
+.hv-tag { display: inline-block; font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; padding: 1px 6px; background: var(--paper); color: var(--muted); border-radius: 2px; margin-top: 2px; }
+
+/* ── SECTION BASE ── */
+section { padding: 80px 32px; }
+.section-inner { max-width: var(--max); margin: 0 auto; }
+.section-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+.section-title { font-family: var(--serif); font-size: clamp(28px, 4vw, 42px); font-weight: 400; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 16px; max-width: 600px; }
+.section-sub { font-size: 16px; color: var(--muted); line-height: 1.65; max-width: 520px; margin-bottom: 48px; }
+
+/* ── PROBLEM SECTION ── */
+.problem { background: var(--cream); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+.problem-text { }
+.problem-quote { font-family: var(--serif); font-size: clamp(20px, 3vw, 28px); font-weight: 400; font-style: italic; line-height: 1.4; color: var(--ink); margin-bottom: 24px; }
+.problem-body { font-size: 15px; color: var(--muted); line-height: 1.7; }
+.problem-stats { display: flex; flex-direction: column; gap: 16px; }
+.stat-card { background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; padding: 20px 24px; }
+.stat-num { font-family: var(--serif); font-size: 36px; font-weight: 400; color: var(--accent); margin-bottom: 4px; }
+.stat-text { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+/* ── HOW IT WORKS ── */
+.steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 48px; }
+.step-card { position: relative; }
+.step-num { font-family: var(--serif); font-size: 48px; font-weight: 400; color: var(--rule); line-height: 1; margin-bottom: 16px; }
+.step-title { font-family: var(--serif); font-size: 20px; font-weight: 400; margin-bottom: 10px; }
+.step-body { font-size: 14px; color: var(--muted); line-height: 1.65; }
+.step-connector { position: absolute; top: 24px; right: -16px; width: 32px; height: 1px; background: var(--rule); }
+
+/* ── FEATURES ── */
+.features-bg { background: var(--cream); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+.feature-item { padding: 24px 28px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); background: var(--paper); transition: background 0.2s; }
+.feature-item:hover { background: var(--cream-dark); }
+.feature-item:nth-child(even) { border-right: none; }
+.feature-item:nth-last-child(-n+2) { border-bottom: none; }
+.feature-icon { font-size: 18px; margin-bottom: 10px; }
+.feature-title { font-family: var(--serif); font-size: 16px; font-weight: 400; margin-bottom: 6px; }
+.feature-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* ── FOR WHO ── */
+.forwho-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; margin-top: 48px; }
+.forwho-yes h3 { font-family: var(--serif); font-size: 18px; font-weight: 400; margin-bottom: 16px; color: var(--success); }
+.forwho-no h3 { font-family: var(--serif); font-size: 18px; font-weight: 400; margin-bottom: 16px; color: var(--muted); }
+.forwho-list { list-style: none; }
+.forwho-list li { padding: 10px 0; border-bottom: 1px solid var(--rule); font-size: 14px; color: var(--ink); line-height: 1.5; display: flex; gap: 10px; align-items: flex-start; }
+.forwho-list li::before { font-size: 12px; margin-top: 2px; flex-shrink: 0; }
+.forwho-yes .forwho-list li::before { content: '✦'; color: var(--accent); }
+.forwho-no .forwho-list li::before { content: '—'; color: var(--rule); }
+
+/* ── PRICING ── */
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 48px; }
+.price-card { border: 1px solid var(--rule); border-radius: 4px; padding: 28px; background: var(--paper); position: relative; }
+.price-card.featured { border-color: var(--ink); background: var(--cream); }
+.price-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 12px; border-radius: 20px; white-space: nowrap; }
+.price-name { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.price-amount { font-family: var(--serif); font-size: 38px; font-weight: 400; line-height: 1; margin-bottom: 4px; }
+.price-period { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+.price-save { font-size: 12px; color: var(--success); font-weight: 500; margin-bottom: 20px; }
+.price-features { list-style: none; margin-bottom: 24px; }
+.price-features li { font-size: 13px; color: var(--muted); padding: 7px 0; border-bottom: 1px solid var(--rule); display: flex; gap: 8px; }
+.price-features li::before { content: '✦'; color: var(--accent); font-size: 10px; margin-top: 3px; flex-shrink: 0; }
+.price-features li:last-child { border-bottom: none; }
+.price-cta { display: block; text-align: center; padding: 12px; border-radius: 2px; font-size: 13px; font-weight: 500; text-decoration: none; letter-spacing: 0.02em; transition: opacity 0.2s; }
+.price-cta-primary { background: var(--ink); color: var(--paper); }
+.price-cta-ghost { border: 1px solid var(--rule); color: var(--ink); }
+.price-cta:hover { opacity: 0.8; }
+
+/* ── FAQ ── */
+.faq-list { max-width: var(--col); margin-top: 48px; }
+.faq-item { border-bottom: 1px solid var(--rule); }
+.faq-q { width: 100%; background: none; border: none; text-align: left; padding: 20px 0; font-family: var(--sans); font-size: 15px; font-weight: 500; color: var(--ink); cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.faq-q:hover { color: var(--accent-dark); }
+.faq-icon { font-size: 18px; color: var(--muted); transition: transform 0.25s; flex-shrink: 0; }
+.faq-a { font-size: 14px; color: var(--muted); line-height: 1.7; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s; }
+.faq-item.open .faq-a { max-height: 200px; padding-bottom: 20px; }
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+
+/* ── HONEST SECTION ── */
+.honest { background: var(--ink); color: var(--paper); }
+.honest .section-label { color: var(--accent); }
+.honest .section-title { color: var(--paper); }
+.honest-body { font-size: 16px; color: rgba(250,250,247,0.65); line-height: 1.75; max-width: 580px; }
+.honest-body strong { color: var(--paper); font-weight: 500; }
+
+/* ── FINAL CTA ── */
+.final-cta { text-align: center; padding: 100px 32px; }
+.final-cta .section-title { margin: 0 auto 16px; text-align: center; }
+.final-cta .section-sub { margin: 0 auto 36px; text-align: center; }
+.final-cta-actions { display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; }
+
+/* ── FOOTER ── */
+footer { border-top: 1px solid var(--rule); padding: 32px; }
+.footer-inner { max-width: var(--max); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.footer-logo { font-family: var(--serif); font-size: 16px; font-weight: 600; color: var(--ink); text-decoration: none; }
+.footer-logo span { font-style: italic; font-weight: 400; color: var(--muted); }
+.footer-links { display: flex; gap: 24px; }
+.footer-links a { font-size: 12px; color: var(--muted); text-decoration: none; }
+.footer-links a:hover { color: var(--ink); }
+.footer-copy { font-size: 12px; color: var(--muted); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  nav { padding: 14px 20px; }
+  .nav-links { gap: 16px; }
+  .nav-links a:not(.nav-cta) { display: none; }
+  .hero { grid-template-columns: 1fr; gap: 40px; padding: 56px 20px 48px; }
+  .hero-visual { display: none; }
+  section { padding: 56px 20px; }
+  .problem-grid, .forwho-grid { grid-template-columns: 1fr; gap: 32px; }
+  .steps-grid { grid-template-columns: 1fr; gap: 32px; }
+  .step-connector { display: none; }
+  .features-grid { grid-template-columns: 1fr; }
+  .feature-item:nth-child(even) { border-right: 1px solid var(--rule); }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .final-cta { padding: 64px 20px; }
+  .footer-inner { flex-direction: column; text-align: center; }
+}
+@media (max-width: 480px) {
+  .hero-title { font-size: 34px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="/">Clear<span>work</span></a>
+  <div class="nav-links">
+    <a href="#how-it-works">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#faq">FAQ</a>
+    <a href="/app" class="nav-cta">Start free →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <p class="hero-label">Vision Clarity + 90-Day Planning</p>
+    <h1 class="hero-title">You have a real idea.<br>You just need a<br><em>real plan.</em></h1>
+    <p class="hero-sub">Clearwork turns a 20-minute clarity session into a 90-day roadmap — built from your answers, not a template.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="/app">Start your free vision session →</a>
+      <p class="hero-note">Free to start. $12/month after a 7-day trial. No credit card to begin.</p>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <p class="hv-label">Your vision</p>
+    <h3 class="hv-title">The thing I'm building</h3>
+    <p class="hv-date">April 29, 2026</p>
+    <div class="hv-block">
+      <p class="hv-block-label">What I'm building</p>
+      <p class="hv-block-text">A focused productivity tool for people with big ideas and ADHD brains — built around clarity first, execution second.</p>
+    </div>
+    <div class="hv-block">
+      <p class="hv-block-label">Something worth noting</p>
+      <p class="hv-block-text">The fear that no one will want it is real — but it's also the thing worth building through, not around.</p>
+    </div>
+    <div class="hv-actions">
+      <p class="hv-block-label" style="margin-bottom:10px;">First 3 actions</p>
+      <div class="hv-action">
+        <span class="hv-action-num">01</span>
+        <div><p class="hv-action-text">Talk to 3 people who would use this. Today.</p><span class="hv-tag">Research</span></div>
+      </div>
+      <div class="hv-action">
+        <span class="hv-action-num">02</span>
+        <div><p class="hv-action-text">Write the one-paragraph description you'd text a smart friend.</p><span class="hv-tag">Clarity</span></div>
+      </div>
+      <div class="hv-action">
+        <span class="hv-action-num">03</span>
+        <div><p class="hv-action-text">Define what "working" looks like in 90 days. One number. One thing.</p><span class="hv-tag">Focus</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section class="problem" id="problem">
+  <div class="section-inner">
+    <div class="problem-grid">
+      <div class="problem-text">
+        <p class="section-label">The problem</p>
+        <p class="problem-quote">"Most productivity tools assume you already know what you're doing."</p>
+        <p class="problem-body">You have an idea — a business, a project, a reinvention. But the tools built for productivity are built for people managing tasks, not people trying to figure out what to build in the first place.<br><br>Clearwork starts before the plan. It starts with the question nobody else asks: <em>what are you actually building, and why does it matter?</em></p>
+      </div>
+      <div class="problem-stats">
+        <div class="stat-card">
+          <div class="stat-num">73%</div>
+          <div class="stat-text">of people with a side project idea never build it — not from lack of motivation, but lack of clarity on where to start.</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">90</div>
+          <div class="stat-text">days is long enough to build something real and short enough to stay focused. Most people never make a plan that fits that window.</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">1 in 3</div>
+          <div class="stat-text">adults with ADHD report that productivity tools designed for neurotypical brains make them feel worse, not better.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="section-inner">
+    <p class="section-label">How it works</p>
+    <h2 class="section-title">Clarity first. Plan second. Build third.</h2>
+    <p class="section-sub">Three steps. One tool. No fluff.</p>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <h3 class="step-title">Answer 8 honest questions</h3>
+        <p class="step-body">Not prompts. Not journaling. Specific questions about what you're building, who it's for, why you're the one to do it, and what you're most afraid won't work. Takes 20–30 minutes.</p>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <h3 class="step-title">Get your vision synthesis</h3>
+        <p class="step-body">AI reads your answers and writes back — not a summary, but an honest reflection of what you said, what it means, and what to do first. Sent to your inbox too.</p>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <h3 class="step-title">Build your 90-day runway</h3>
+        <p class="step-body">Phase by phase, week by week. Milestones, subtasks, weekly resets, and a plan that adapts when your thinking shifts. Because it will shift.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-bg" id="features">
+  <div class="section-inner">
+    <p class="section-label">What's inside</p>
+    <h2 class="section-title">Everything you need. Nothing you don't.</h2>
+    <p class="section-sub">Built specifically for people with big ideas, nonlinear brains, and a real project to finish.</p>
+    <div class="features-grid">
+      <div class="feature-item">
+        <div class="feature-icon">✦</div>
+        <h3 class="feature-title">Vision clarity session</h3>
+        <p class="feature-desc">8 guided questions that cut through the noise and get to what actually matters about what you're building.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">→</div>
+        <h3 class="feature-title">90-day project runway</h3>
+        <p class="feature-desc">3 phases, weekly milestones, and subtasks you control. A plan built from your vision, not a blank template.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">↺</div>
+        <h3 class="feature-title">Weekly Reset ritual</h3>
+        <p class="feature-desc">5 minutes every week. What happened, what got in the way, what's the one thing. The habit that keeps everything else moving.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">?</div>
+        <h3 class="feature-title">New Thought checker</h3>
+        <p class="feature-desc">New idea mid-build? Get an honest verdict: integrate it, backburner it, or examine whether it's actually avoidance.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">◎</div>
+        <h3 class="feature-title">Phase reviews</h3>
+        <p class="feature-desc">When you finish a phase, the plan adapts based on what you actually learned. Not what you planned to learn.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">□</div>
+        <h3 class="feature-title">Vision board</h3>
+        <p class="feature-desc">A visual canvas for what you're building toward. Words, colors, images, quotes. Yours to arrange freely.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">✎</div>
+        <h3 class="feature-title">90-day retrospective</h3>
+        <p class="feature-desc">When you finish, an honest AI-powered look at what you built, what you learned, and what comes next.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">⚙</div>
+        <h3 class="feature-title">Customizable workspace</h3>
+        <p class="feature-desc">Accent color, font, AI tone, reset day. Make it feel like yours — because it is.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHO -->
+<section id="for-who">
+  <div class="section-inner">
+    <p class="section-label">Who it's for</p>
+    <h2 class="section-title">Built for a specific kind of person.</h2>
+    <p class="section-sub">Not everyone. The right ones will know immediately.</p>
+    <div class="forwho-grid">
+      <div class="forwho-yes">
+        <h3>Clearwork is for you if…</h3>
+        <ul class="forwho-list">
+          <li>You have a real idea and keep starting over</li>
+          <li>Your notes app is full of half-formed plans</li>
+          <li>You need clarity before you can execute</li>
+          <li>Traditional productivity tools feel built for someone else</li>
+          <li>You want a thinking partner at 11pm, not a community</li>
+          <li>You're building something solo and need structure without an audience</li>
+          <li>Your brain works in bursts and you need a system that works with that</li>
+        </ul>
+      </div>
+      <div class="forwho-no">
+        <h3>Clearwork is not for you if…</h3>
+        <ul class="forwho-list">
+          <li>You need team collaboration features</li>
+          <li>You want a social platform or accountability group</li>
+          <li>You're looking for a task manager or calendar</li>
+          <li>You need to manage multiple large projects simultaneously</li>
+          <li>You want daily check-ins or reminders pushed to you</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="features-bg" id="pricing">
+  <div class="section-inner">
+    <p class="section-label">Pricing</p>
+    <h2 class="section-title">Simple, honest pricing.</h2>
+    <p class="section-sub">No tiers designed to confuse you. No features locked behind an "enterprise" plan.</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <p class="price-name">Free</p>
+        <p class="price-amount">$0</p>
+        <p class="price-period">forever</p>
+        <ul class="price-features">
+          <li>Vision clarity session</li>
+          <li>AI-powered vision synthesis</li>
+          <li>Vision emailed to your inbox</li>
+          <li>Keep it forever</li>
+        </ul>
+        <a class="price-cta price-cta-ghost" href="/app">Start free</a>
+      </div>
+      <div class="price-card featured">
+        <div class="price-badge">Most popular</div>
+        <p class="price-name">Monthly</p>
+        <p class="price-amount">$12</p>
+        <p class="price-period">per month</p>
+        <ul class="price-features">
+          <li>Everything in Free</li>
+          <li>90-day project runway</li>
+          <li>Weekly Reset ritual</li>
+          <li>New Thought checker</li>
+          <li>Phase reviews + retrospective</li>
+          <li>Vision board</li>
+          <li>Customizable workspace</li>
+          <li>7-day free trial</li>
+        </ul>
+        <a class="price-cta price-cta-primary" href="https://oddlyuseful.co/checkout/buy/5ffc8171-48ee-4937-9191-1c73f44a7d57">Start 7-day trial →</a>
+      </div>
+      <div class="price-card">
+        <p class="price-name">Annual</p>
+        <p class="price-amount">$97</p>
+        <p class="price-period">per year</p>
+        <p class="price-save">Save $47 vs monthly</p>
+        <ul class="price-features">
+          <li>Everything in Monthly</li>
+          <li>Best value for one full build cycle</li>
+          <li>2 complete 90-day runways</li>
+          <li>7-day free trial</li>
+        </ul>
+        <a class="price-cta price-cta-ghost" href="https://oddlyuseful.co/checkout/buy/d5ecba1f-056b-4ab7-9d59-2dbbcc09d052">Get annual access →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-inner">
+    <p class="section-label">Questions</p>
+    <h2 class="section-title">Honest answers.</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">Do I need to finish all 8 questions in one sitting? <span class="faq-icon">+</span></button>
+        <div class="faq-a">No. Clearwork saves your answers automatically as you go. You can start, close the tab, and pick up exactly where you left off. There's no timer and no pressure to finish in one session.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">What does the AI actually do? <span class="faq-icon">+</span></button>
+        <div class="faq-a">It reads your 8 answers and synthesizes them into a personalized vision statement, a 90-day roadmap, and honest observations about what you said. It's not a chatbot and it doesn't have memory between sessions. It's a structured thinking tool that does the synthesis work for you. All AI-generated content is clearly labeled.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">What if my idea changes mid-way through? <span class="faq-icon">+</span></button>
+        <div class="faq-a">That's exactly what the New Thought checker is for. When a new idea surfaces, you describe it and Clearwork gives you an honest verdict: integrate it into the current plan, add it to your Someday list for later, or examine whether it might be avoidance of something harder. Nothing gets lost, and nothing derails you unless you let it.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">Can I use Clearwork on my phone? <span class="faq-icon">+</span></button>
+        <div class="faq-a">Yes. Clearwork is a Progressive Web App — you can add it to your home screen on iOS or Android and it works like a native app. No app store download required.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">What happens when I finish my 90 days? <span class="faq-icon">+</span></button>
+        <div class="faq-a">Clearwork generates a 90-day retrospective — an honest look at what you built, what you learned, what surprised you, and what the next 90 days should focus on. Then you can start a fresh vision session for your next build cycle.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">Is my data private? <span class="faq-icon">+</span></button>
+        <div class="faq-a">Your answers are sent to Anthropic's API to generate your vision synthesis and plan. They are not stored on our servers beyond your session, and we don't sell or share your data. Your projects are saved locally in your browser.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">How do I cancel? <span class="faq-icon">+</span></button>
+        <div class="faq-a">Cancel anytime through your LemonSqueezy customer portal — no hoops, no cancellation interviews, no "are you sure?" dark patterns. If you cancel during your trial, you won't be charged.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HONEST -->
+<section class="honest">
+  <div class="section-inner">
+    <p class="section-label">The honest part</p>
+    <h2 class="section-title" style="color:var(--paper);">What Clearwork is — and isn't.</h2>
+    <p class="honest-body">Clearwork uses <strong>AI to synthesize your answers</strong> into personalized plans and feedback. It's not a chatbot. It won't remember you between sessions yet. It won't replace a real coach, a real business partner, or a real conversation with someone who knows you.<br><br>What it <strong>will do</strong> is help you get clear, make a plan, and stay moving — on your own timeline, without judgment, without an audience, and without the pressure of performing progress for anyone else.<br><br>It's a private workspace for one project at a time. That's exactly what it's supposed to be.</p>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="section-inner">
+    <p class="section-label">Ready?</p>
+    <h2 class="section-title">Start with one question.<br><em style="font-family:var(--serif)">What are you actually building?</em></h2>
+    <p class="section-sub">20 minutes. 8 questions. A plan that fits your actual life.</p>
+    <div class="final-cta-actions">
+      <a class="btn-primary" href="/app">Start your free vision session →</a>
+      <a class="btn-ghost" href="#how-it-works">See how it works</a>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:16px;">Free to start. $12/month after a 7-day trial. No credit card required to begin.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <a class="footer-logo" href="/">Clear<span>work</span></a>
+    <div class="footer-links">
+      <a href="/app">Launch app</a>
+      <a href="mailto:hello@getclearwork.app">Contact</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+    <p class="footer-copy">© 2026 Oddly Useful Co.</p>
+  </div>
+</footer>
+
+<script>
+function toggleFAQ(btn) {
+  const item = btn.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// Smooth scroll for nav links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+
+// Fade in sections on scroll
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.step-card, .feature-item, .price-card, .stat-card').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(16px)';
+  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>

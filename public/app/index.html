@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0D0D0B">
+<meta name="description" content="Clearwork — vision clarity and 90-day planning for people building something real">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Clearwork">
+<title>Clearwork</title>
+<link rel="manifest" href="clearwork-manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=Inter:wght@300;400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0D0D0B;
+    --cream: #F5F2EC;
+    --paper: #FAFAF7;
+    --rule: #E0DDD6;
+    --muted: #8A8780;
+    --accent: #C4A882;
+    --accent-dark: #9E7A4F;
+    --success: #4A7C59;
+    --warning: #B8864A;
+    --danger: #B85C4A;
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+    --user-accent: #C4A882;
+    --user-font: 'Playfair Display', Georgia, serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  #app { min-height: 100vh; display: flex; flex-direction: column; }
+  .screen { display: none; flex-direction: column; min-height: 100vh; animation: fadeIn 0.35s ease; }
+  .screen.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes celebrate { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── TOPBAR ── */
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px 14px; border-bottom: 1px solid var(--rule); position: sticky; top: 0; background: var(--paper); z-index: 10; }
+  .logo { font-family: var(--user-font); font-size: 18px; font-weight: 600; letter-spacing: -0.02em; cursor: pointer; color: var(--ink); }
+  .logo span { font-style: italic; font-weight: 400; color: var(--muted); }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+  .progress-wrap { display: flex; gap: 4px; align-items: center; }
+  .prog-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--rule); transition: background 0.3s, transform 0.3s; }
+  .prog-dot.done { background: var(--user-accent); }
+  .prog-dot.active { background: var(--ink); transform: scale(1.3); }
+
+  /* ── BUTTONS ── */
+  .btn-primary { background: var(--ink); color: var(--paper); border: none; border-radius: 2px; padding: 13px 28px; font-family: var(--sans); font-size: 14px; font-weight: 500; letter-spacing: 0.03em; cursor: pointer; transition: opacity 0.2s, transform 0.15s; display: inline-flex; align-items: center; gap: 8px; }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-accent { background: var(--user-accent); color: var(--ink); border: none; border-radius: 2px; padding: 13px 28px; font-family: var(--sans); font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+  .btn-accent:hover { opacity: 0.85; }
+  .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--rule); border-radius: 2px; padding: 9px 18px; font-family: var(--sans); font-size: 13px; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+  .btn-ghost:hover { border-color: var(--ink); color: var(--ink); }
+  .btn-text { background: none; border: none; color: var(--muted); font-family: var(--sans); font-size: 13px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; padding: 0; }
+  .btn-text:hover { color: var(--ink); }
+  .btn-sm { padding: 7px 14px; font-size: 12px; }
+  .btn-danger { background: var(--danger); color: white; border: none; border-radius: 2px; padding: 9px 18px; font-family: var(--sans); font-size: 13px; cursor: pointer; }
+
+  /* ── SPLASH ── */
+  .splash { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 32px; text-align: center; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; }
+  .splash-title { font-family: var(--user-font); font-size: clamp(34px, 7vw, 54px); font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 14px; }
+  .splash-title em { font-style: italic; color: var(--user-accent); }
+  .splash-sub { font-size: 16px; color: var(--muted); max-width: 320px; line-height: 1.6; margin-bottom: 36px; }
+  .splash-meta { font-size: 12px; color: var(--muted); margin-top: 18px; display: flex; gap: 16px; }
+
+  /* ── SECTION NAV ── */
+  .section-nav { display: flex; overflow-x: auto; border-bottom: 1px solid var(--rule); padding: 0 24px; scrollbar-width: none; }
+  .section-nav::-webkit-scrollbar { display: none; }
+  .sec-tab { background: none; border: none; border-bottom: 2px solid transparent; padding: 11px 14px; font-family: var(--sans); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); cursor: pointer; white-space: nowrap; transition: color 0.2s, border-color 0.2s; margin-bottom: -1px; }
+  .sec-tab.active { color: var(--ink); border-bottom-color: var(--ink); }
+  .sec-tab.done { color: var(--user-accent); }
+
+  /* ── QUESTION FLOW ── */
+  .q-container { flex: 1; display: flex; flex-direction: column; max-width: 640px; width: 100%; margin: 0 auto; padding: 32px 24px 24px; }
+  .q-section-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--user-accent); margin-bottom: 8px; }
+  .q-number { font-family: var(--user-font); font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+  .q-text { font-family: var(--user-font); font-size: clamp(19px, 4vw, 26px); font-weight: 400; line-height: 1.3; margin-bottom: 8px; }
+  .q-hint { font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
+  .q-input { width: 100%; background: transparent; border: none; border-bottom: 2px solid var(--rule); padding: 12px 0; font-family: var(--sans); font-size: 16px; color: var(--ink); outline: none; resize: none; min-height: 90px; transition: border-color 0.2s; line-height: 1.6; }
+  .q-input:focus { border-bottom-color: var(--ink); }
+  .q-input::placeholder { color: var(--rule); }
+  .q-char-count { text-align: right; font-size: 11px; color: var(--rule); margin-top: 6px; transition: color 0.2s; }
+  .q-char-count.active { color: var(--muted); }
+  .q-nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 0 8px; margin-top: auto; border-top: 1px solid var(--rule); }
+
+  /* ── VISION OUTPUT ── */
+  .vision-header { padding: 28px 24px 20px; border-bottom: 1px solid var(--rule); max-width: 680px; width: 100%; margin: 0 auto; }
+  .vision-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .vision-title { font-family: var(--user-font); font-size: 26px; font-weight: 400; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 4px; }
+  .vision-date { font-size: 12px; color: var(--muted); }
+  .vision-body { flex: 1; padding: 24px; max-width: 680px; width: 100%; margin: 0 auto; }
+  .vision-block { margin-bottom: 28px; }
+  .vision-block-label { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--user-accent); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .vision-block-label::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+  .vision-block-text { font-family: var(--user-font); font-size: 16px; line-height: 1.75; color: #3a3834; font-style: italic; }
+  .action-list { list-style: none; }
+  .action-item { display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .action-item:last-child { border-bottom: none; }
+  .action-num { font-family: var(--user-font); font-size: 13px; color: var(--muted); min-width: 20px; padding-top: 2px; }
+  .action-text { font-size: 14px; line-height: 1.5; color: var(--ink); }
+  .action-tag { display: inline-block; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; background: var(--cream); color: var(--muted); border-radius: 2px; margin-top: 4px; }
+  .vision-actions-row { display: flex; gap: 10px; flex-wrap: wrap; padding: 18px 24px 28px; max-width: 680px; width: 100%; margin: 0 auto; border-top: 1px solid var(--rule); }
+  .insight-box { background: var(--cream); border-radius: 4px; padding: 16px 18px; margin-bottom: 28px; }
+  .insight-box .vision-block-label { color: var(--ink); }
+  .insight-box .vision-block-text { font-size: 15px; }
+  .ai-disclosure { font-size: 11px; color: var(--muted); text-align: center; padding: 12px 24px 0; max-width: 680px; margin: 0 auto; }
+
+  /* ── PAYWALL ── */
+  .paywall { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 24px; text-align: center; max-width: 520px; margin: 0 auto; }
+  .paywall-title { font-family: var(--user-font); font-size: clamp(26px, 5vw, 36px); font-weight: 400; line-height: 1.2; margin-bottom: 12px; }
+  .paywall-sub { font-size: 15px; color: var(--muted); line-height: 1.6; margin-bottom: 32px; max-width: 380px; }
+  .paywall-features { text-align: left; margin-bottom: 32px; width: 100%; max-width: 340px; }
+  .paywall-feature { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; font-size: 14px; color: var(--ink); }
+  .paywall-feature::before { content: '✦'; color: var(--user-accent); font-size: 10px; margin-top: 4px; flex-shrink: 0; }
+  .price-row { display: flex; gap: 12px; margin-bottom: 16px; width: 100%; max-width: 340px; }
+  .price-card { flex: 1; border: 1px solid var(--rule); border-radius: 4px; padding: 14px; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+  .price-card.selected { border-color: var(--ink); background: var(--cream); }
+  .price-card-name { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .price-card-amount { font-family: var(--user-font); font-size: 22px; font-weight: 400; }
+  .price-card-period { font-size: 12px; color: var(--muted); }
+  .price-card-save { font-size: 11px; color: var(--success); font-weight: 500; margin-top: 2px; }
+  .paywall-note { font-size: 12px; color: var(--muted); margin-top: 10px; }
+
+  /* ── DASHBOARD ── */
+  .dashboard { flex: 1; padding: 28px 24px; max-width: 680px; width: 100%; margin: 0 auto; }
+  .dash-section { margin-bottom: 36px; }
+  .dash-section-title { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .dash-card { background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; padding: 16px 18px; margin-bottom: 10px; cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s; }
+  .dash-card:hover { border-color: var(--user-accent); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .dash-card-title { font-family: var(--user-font); font-size: 17px; font-weight: 400; margin-bottom: 4px; }
+  .dash-card-meta { font-size: 12px; color: var(--muted); display: flex; gap: 12px; }
+  .dash-card-tag { display: inline-block; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 2px; }
+  .tag-active { background: rgba(74,124,89,0.1); color: var(--success); }
+  .tag-someday { background: var(--cream); color: var(--muted); }
+  .new-thought-btn { display: flex; align-items: center; gap: 8px; width: 100%; background: var(--cream); border: 1px dashed var(--rule); border-radius: 4px; padding: 14px 18px; font-family: var(--sans); font-size: 14px; color: var(--muted); cursor: pointer; transition: border-color 0.2s, color 0.2s; margin-bottom: 10px; }
+  .new-thought-btn:hover { border-color: var(--user-accent); color: var(--ink); }
+
+  /* ── PROJECT RUNWAY ── */
+  .runway { flex: 1; padding: 24px; max-width: 680px; width: 100%; margin: 0 auto; }
+  .runway-header { margin-bottom: 28px; }
+  .runway-title { font-family: var(--user-font); font-size: 24px; font-weight: 400; margin-bottom: 4px; }
+  .runway-meta { font-size: 12px; color: var(--muted); display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .phase-block { margin-bottom: 28px; }
+  .phase-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); }
+  .phase-number { font-family: var(--user-font); font-size: 13px; color: var(--muted); }
+  .phase-title-text { font-family: var(--user-font); font-size: 18px; font-weight: 400; flex: 1; cursor: pointer; }
+  .phase-title-text:hover { color: var(--user-accent); }
+  .phase-dates { font-size: 11px; color: var(--muted); }
+  .phase-complete-badge { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; background: rgba(74,124,89,0.1); color: var(--success); border-radius: 2px; }
+
+  /* ── MILESTONES ── */
+  .milestone-item { padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .milestone-item:last-child { border-bottom: none; }
+  .milestone-row { display: flex; gap: 12px; align-items: flex-start; }
+  .milestone-check { width: 18px; height: 18px; border: 1.5px solid var(--rule); border-radius: 2px; flex-shrink: 0; cursor: pointer; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: background 0.2s, border-color 0.2s; }
+  .milestone-check.checked { background: var(--ink); border-color: var(--ink); animation: celebrate 0.3s ease; }
+  .milestone-check.checked::after { content: '✓'; color: var(--paper); font-size: 11px; }
+  .milestone-text { font-size: 14px; line-height: 1.5; flex: 1; }
+  .milestone-text.checked { color: var(--muted); text-decoration: line-through; }
+  .milestone-week { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .milestone-edit { font-size: 11px; color: var(--muted); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; margin-left: 8px; }
+  .milestone-edit:hover { color: var(--ink); }
+
+  /* ── SUBTASKS ── */
+  .subtask-list { margin-top: 8px; margin-left: 30px; }
+  .subtask-item { display: flex; gap: 8px; align-items: center; padding: 5px 0; }
+  .subtask-check { width: 14px; height: 14px; border: 1px solid var(--rule); border-radius: 2px; flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; }
+  .subtask-check.checked { background: var(--user-accent); border-color: var(--user-accent); }
+  .subtask-check.checked::after { content: '✓'; color: white; font-size: 9px; }
+  .subtask-text { font-size: 13px; color: var(--muted); flex: 1; }
+  .subtask-text.checked { text-decoration: line-through; color: var(--rule); }
+  .subtask-delete { font-size: 11px; color: var(--rule); cursor: pointer; padding: 0 4px; }
+  .subtask-delete:hover { color: var(--danger); }
+  .add-subtask-row { display: flex; gap: 8px; align-items: center; margin-top: 6px; margin-left: 30px; }
+  .add-subtask-input { flex: 1; background: transparent; border: none; border-bottom: 1px solid var(--rule); font-family: var(--sans); font-size: 13px; color: var(--ink); padding: 4px 0; outline: none; }
+  .add-subtask-input::placeholder { color: var(--rule); }
+  .add-subtask-btn { font-size: 12px; color: var(--user-accent); cursor: pointer; background: none; border: none; font-family: var(--sans); padding: 0; }
+  .add-subtask-btn:hover { color: var(--accent-dark); }
+
+  /* ── THIS WEEK ── */
+  .this-week-block { background: var(--cream); border-radius: 4px; padding: 16px 18px; margin-bottom: 24px; }
+  .this-week-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--user-accent); margin-bottom: 10px; }
+  .runway-actions-row { display: flex; gap: 10px; flex-wrap: wrap; padding: 16px 0 24px; border-top: 1px solid var(--rule); margin-top: 8px; }
+  .progress-bar-wrap { height: 3px; background: var(--rule); border-radius: 2px; margin-top: 8px; width: 100%; }
+  .progress-bar-fill { height: 100%; background: var(--user-accent); border-radius: 2px; transition: width 0.4s ease; }
+
+  /* ── WEEKLY RESET ── */
+  .reset-container { flex: 1; max-width: 640px; width: 100%; margin: 0 auto; padding: 32px 24px; }
+  .reset-header { margin-bottom: 28px; }
+  .reset-title { font-family: var(--user-font); font-size: 24px; font-weight: 400; margin-bottom: 6px; }
+  .reset-sub { font-size: 14px; color: var(--muted); line-height: 1.5; }
+  .reset-q { margin-bottom: 28px; }
+  .reset-q-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--user-accent); margin-bottom: 8px; }
+  .reset-q-text { font-family: var(--user-font); font-size: 18px; font-weight: 400; margin-bottom: 12px; line-height: 1.3; }
+  .reset-input { width: 100%; background: transparent; border: none; border-bottom: 2px solid var(--rule); padding: 10px 0; font-family: var(--sans); font-size: 15px; color: var(--ink); outline: none; resize: none; min-height: 70px; transition: border-color 0.2s; line-height: 1.6; }
+  .reset-input:focus { border-bottom-color: var(--ink); }
+
+  /* ── PHASE REVIEW ── */
+  .review-banner { background: var(--cream); border: 1px solid var(--rule); border-radius: 4px; padding: 16px 18px; margin-bottom: 20px; animation: slideUp 0.4s ease; }
+  .review-banner-title { font-family: var(--user-font); font-size: 17px; font-weight: 400; margin-bottom: 6px; }
+  .review-banner-sub { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+
+  /* ── RETROSPECTIVE ── */
+  .retro-container { flex: 1; max-width: 640px; width: 100%; margin: 0 auto; padding: 32px 24px; }
+  .retro-title { font-family: var(--user-font); font-size: 28px; font-weight: 400; margin-bottom: 8px; }
+  .retro-sub { font-size: 15px; color: var(--muted); margin-bottom: 32px; line-height: 1.5; }
+
+  /* ── SETTINGS ── */
+  .settings-container { flex: 1; max-width: 580px; width: 100%; margin: 0 auto; padding: 32px 24px; }
+  .settings-title { font-family: var(--user-font); font-size: 22px; font-weight: 400; margin-bottom: 28px; }
+  .settings-section { margin-bottom: 32px; }
+  .settings-section-title { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--rule); }
+  .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--rule); gap: 16px; }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-row-label { font-size: 14px; color: var(--ink); }
+  .settings-row-hint { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .color-picker-wrap { display: flex; gap: 8px; align-items: center; }
+  .color-swatch { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: transform 0.15s, border-color 0.15s; flex-shrink: 0; }
+  .color-swatch.active { border-color: var(--ink); transform: scale(1.15); }
+  input[type="color"] { width: 32px; height: 32px; border: 1px solid var(--rule); border-radius: 4px; padding: 2px; cursor: pointer; background: none; }
+  .tone-options { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tone-btn { padding: 6px 14px; border: 1px solid var(--rule); border-radius: 20px; font-family: var(--sans); font-size: 12px; cursor: pointer; background: transparent; color: var(--muted); transition: border-color 0.2s, color 0.2s, background 0.2s; }
+  .tone-btn.active { border-color: var(--ink); color: var(--ink); background: var(--cream); }
+  .day-options { display: flex; gap: 6px; flex-wrap: wrap; }
+  .day-btn { padding: 5px 10px; border: 1px solid var(--rule); border-radius: 4px; font-family: var(--sans); font-size: 12px; cursor: pointer; background: transparent; color: var(--muted); transition: all 0.2s; }
+  .day-btn.active { border-color: var(--ink); color: var(--ink); background: var(--cream); }
+  .font-options { display: flex; gap: 8px; }
+  .font-btn { padding: 8px 14px; border: 1px solid var(--rule); border-radius: 4px; font-size: 14px; cursor: pointer; background: transparent; color: var(--muted); transition: all 0.2s; }
+  .font-btn.active { border-color: var(--ink); color: var(--ink); background: var(--cream); }
+
+  /* ── MODAL ── */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(13,13,11,0.5); z-index: 50; align-items: center; justify-content: center; padding: 24px; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: var(--paper); border-radius: 6px; padding: 28px; max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; animation: fadeIn 0.25s ease; }
+  .modal-title { font-family: var(--user-font); font-size: 22px; font-weight: 400; margin-bottom: 8px; }
+  .modal-sub { font-size: 14px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
+  .modal-input { width: 100%; background: transparent; border: none; border-bottom: 2px solid var(--rule); padding: 10px 0; font-family: var(--sans); font-size: 15px; color: var(--ink); outline: none; resize: none; min-height: 80px; line-height: 1.6; margin-bottom: 16px; }
+  .modal-input:focus { border-bottom-color: var(--ink); }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
+  .verdict-box { border-radius: 4px; padding: 16px; margin-bottom: 16px; }
+  .verdict-integrate { background: rgba(74,124,89,0.08); border: 1px solid rgba(74,124,89,0.2); }
+  .verdict-backburner { background: var(--cream); border: 1px solid var(--rule); }
+  .verdict-examine { background: rgba(184,92,74,0.06); border: 1px solid rgba(184,92,74,0.15); }
+  .verdict-icon { font-size: 20px; margin-bottom: 8px; }
+  .verdict-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; font-weight: 500; }
+  .verdict-integrate .verdict-label { color: var(--success); }
+  .verdict-backburner .verdict-label { color: var(--muted); }
+  .verdict-examine .verdict-label { color: var(--danger); }
+  .verdict-text { font-family: var(--user-font); font-size: 15px; line-height: 1.6; font-style: italic; }
+
+  /* ── SOMEDAY ── */
+  .someday-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .someday-item:last-child { border-bottom: none; }
+  .someday-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--user-accent); margin-top: 6px; flex-shrink: 0; }
+  .someday-text { font-size: 14px; line-height: 1.5; flex: 1; }
+  .someday-date { font-size: 11px; color: var(--muted); }
+
+  /* ── CELEBRATION ── */
+  .celebration-banner { background: linear-gradient(135deg, var(--cream), #f0ebe0); border: 1px solid var(--user-accent); border-radius: 4px; padding: 16px 18px; margin-bottom: 16px; text-align: center; animation: slideUp 0.4s ease; }
+  .celebration-title { font-family: var(--user-font); font-size: 18px; font-weight: 400; margin-bottom: 4px; }
+  .celebration-sub { font-size: 13px; color: var(--muted); }
+
+
+  /* ── VISION BOARD ── */
+  .vb-card { position: absolute; cursor: grab; user-select: none; border-radius: 4px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: visible; }
+  .vb-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); z-index: 10; }
+  .vb-card.dragging { cursor: grabbing; box-shadow: 0 8px 32px rgba(0,0,0,0.18); z-index: 100; opacity: 0.95; }
+  .vb-card-text { font-family: var(--user-font); font-weight: 400; line-height: 1.3; text-align: center; padding: 12px 16px; word-break: break-word; pointer-events: none; }
+  .vb-card-quote { font-family: var(--user-font); font-style: italic; line-height: 1.6; text-align: center; padding: 16px 20px; pointer-events: none; }
+  .vb-card-author { font-size: 12px; font-style: normal; color: var(--muted); margin-top: 8px; }
+  .vb-card-image { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; display: block; pointer-events: none; }
+  .vb-card-emoji { font-size: 48px; line-height: 1; pointer-events: none; }
+  .vb-card-delete { position: absolute; top: -8px; right: -8px; width: 22px; height: 22px; background: var(--danger); color: white; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 11px; cursor: pointer; z-index: 20; border: none; line-height: 1; }
+  .vb-card:hover .vb-card-delete { display: flex; }
+  /* ── LOADING ── */
+  .thinking-dots { display: flex; gap: 8px; align-items: center; justify-content: center; }
+  .thinking-dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--user-accent); animation: thinking 1.4s ease-in-out infinite; }
+  .thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes thinking { 0%,80%,100% { opacity:0.2; transform:scale(0.8); } 40% { opacity:1; transform:scale(1.2); } }
+  .loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; gap: 20px; }
+  .loading-text { font-family: var(--user-font); font-size: 16px; font-style: italic; color: var(--muted); text-align: center; max-width: 260px; line-height: 1.6; }
+
+  /* ── UTILS ── */
+  .rule-divider { height: 1px; background: var(--rule); margin: 20px 0; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: var(--paper); font-size: 13px; padding: 10px 20px; border-radius: 2px; transition: transform 0.3s ease; z-index: 100; white-space: nowrap; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .empty-state { font-size: 14px; color: var(--muted); font-style: italic; padding: 8px 0; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 420px) {
+    .section-nav { padding: 0 12px; }
+    .q-container, .vision-body, .dashboard, .runway, .settings-container, .reset-container, .retro-container { padding-left: 16px; padding-right: 16px; }
+    .vision-header { padding-left: 16px; padding-right: 16px; }
+    .price-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- SPLASH -->
+  <div id="screen-splash" class="screen active">
+    <div class="topbar">
+      <div class="logo" onclick="goHome()">Clear<span>work</span></div>
+    </div>
+    <div class="splash">
+      <p class="eyebrow">Vision Clarity Session</p>
+      <h1 class="splash-title">What are you<br><em>actually</em> building?</h1>
+      <p class="splash-sub">A guided session to cut through the noise and get clear on what you're building, why it matters, and where to start.</p>
+      <button class="btn-primary" onclick="startSession()">Begin session <span style="font-size:18px;line-height:1">→</span></button>
+      <div class="splash-meta">
+        <span>✦ 8 questions</span>
+        <span>✦ 20–30 min</span>
+        <span>✦ Saves automatically</span>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-top:16px;">Vision session is free. Full access is $12/mo after a 7-day trial.</p>
+      <button id="install-btn" class="btn-ghost" onclick="installApp()" style="display:none;margin-top:16px;align-items:center;gap:6px;font-size:12px;">⊕ Add to home screen</button>
+    </div>
+  </div>
+
+  <!-- QUESTIONS -->
+  <div id="screen-questions" class="screen">
+    <div class="topbar">
+      <div class="logo" onclick="goHome()">Clear<span>work</span></div>
+      <div class="progress-wrap" id="progress-dots"></div>
+    </div>
+    <div class="section-nav" id="section-nav"></div>
+    <div class="q-container">
+      <p class="q-section-label" id="q-section-label"></p>
+      <p class="q-number" id="q-number"></p>
+      <h2 class="q-text" id="q-text"></h2>
+      <p class="q-hint" id="q-hint"></p>
+      <textarea class="q-input" id="q-input" rows="4" placeholder="Write freely…" oninput="handleInput(this)"></textarea>
+      <p class="q-char-count" id="char-count">0</p>
+      <div class="q-nav">
+        <button class="btn-ghost" id="btn-back" onclick="goBack()">← Back</button>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button class="btn-text" onclick="skipQuestion()">Skip</button>
+          <button class="btn-primary" id="btn-next" onclick="goNext()">Next →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISION OUTPUT -->
+  <div id="screen-vision" class="screen">
+    <div class="topbar">
+      <div class="logo" style="cursor:default">Clear<span>work</span></div>
+      <div class="topbar-actions">
+        <button class="btn-ghost btn-sm" onclick="goToQuestions()">Edit answers</button>
+      </div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;">
+      <div class="vision-header">
+        <p class="vision-label">Your vision</p>
+        <h2 class="vision-title" id="vision-title">Untitled</h2>
+        <p class="vision-date" id="vision-date"></p>
+      </div>
+      <div class="vision-body" id="vision-body"></div>
+      <p class="ai-disclosure">This synthesis was generated by AI based on your answers.</p>
+      <div class="vision-actions-row">
+        <button class="btn-primary" onclick="showPaywall()">Build this out →</button>
+        <button class="btn-ghost" onclick="startSession(true)">Start fresh</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAYWALL -->
+  <div id="screen-paywall" class="screen">
+    <div class="topbar">
+      <div class="logo" style="cursor:default">Clear<span>work</span></div>
+      <button class="btn-ghost btn-sm" onclick="showScreen('vision')">← Back</button>
+    </div>
+    <div class="paywall">
+      <p class="eyebrow">Project Runway</p>
+      <h2 class="paywall-title">Turn your vision into a<br><em style="font-family:var(--user-font)">90-day plan</em></h2>
+      <p class="paywall-sub">A realistic plan built from your answers. Adapts as you learn. Stays out of your way.</p>
+      <div class="paywall-features">
+        <div class="paywall-feature">AI-generated 90-day roadmap from your vision</div>
+        <div class="paywall-feature">Weekly actions — just this week, nothing more</div>
+        <div class="paywall-feature">Milestone sub-tasks you control</div>
+        <div class="paywall-feature">New Thought checker — pivot, backburner, or stay the course</div>
+        <div class="paywall-feature">Weekly Reset — 5 minutes to stay on track</div>
+        <div class="paywall-feature">Phase reviews that adapt your plan as you learn</div>
+        <div class="paywall-feature">90-day retrospective when you finish</div>
+        <div class="paywall-feature">Customizable workspace — yours, not ours</div>
+      </div>
+      <div class="price-row">
+        <div class="price-card selected" id="price-monthly" onclick="selectPrice('monthly')">
+          <div class="price-card-name">Monthly</div>
+          <div class="price-card-amount">$12</div>
+          <div class="price-card-period">per month</div>
+        </div>
+        <div class="price-card" id="price-annual" onclick="selectPrice('annual')">
+          <div class="price-card-name">Annual</div>
+          <div class="price-card-amount">$97</div>
+          <div class="price-card-period">per year</div>
+          <div class="price-card-save">Save $47</div>
+        </div>
+      </div>
+      <button class="btn-primary" style="width:100%;max-width:340px;justify-content:center;" onclick="startTrial()">Start free — then $12/mo →</button>
+      <p class="paywall-note">Free for 7 days. After that, $12/month or $97/year. Cancel anytime before trial ends and you won't be charged.</p>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="screen-dashboard" class="screen">
+    <div class="topbar">
+      <div class="logo" onclick="goHome()">Clear<span>work</span></div>
+      <div class="topbar-actions">
+        <button class="btn-ghost btn-sm" onclick="showScreen('settings');renderSettings()">⚙ Settings</button>
+        <button class="btn-ghost btn-sm" onclick="openVisionBoard()">✦ Vision board</button>
+        <button class="btn-ghost btn-sm" onclick="startSession()">+ New vision</button>
+      </div>
+    </div>
+    <div class="dashboard">
+      <div class="dash-section">
+        <p class="dash-section-title">Active projects</p>
+        <div id="active-projects"></div>
+        <button class="new-thought-btn" onclick="openNewThought()">
+          <span style="font-size:16px">✦</span>
+          I have a new thought or idea
+        </button>
+      </div>
+      <div class="dash-section" id="weekly-reset-section" style="display:none">
+        <p class="dash-section-title">Weekly reset</p>
+        <div id="weekly-reset-card"></div>
+      </div>
+      <div class="dash-section" id="someday-section" style="display:none">
+        <p class="dash-section-title">Someday / Maybe</p>
+        <div id="someday-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT RUNWAY -->
+  <div id="screen-runway" class="screen">
+    <div class="topbar">
+      <div class="logo" onclick="goHome()">Clear<span>work</span></div>
+      <button class="btn-ghost btn-sm" onclick="showScreen('dashboard');renderDashboard()">← Dashboard</button>
+    </div>
+    <div class="runway" id="runway-content"></div>
+  </div>
+
+  <!-- WEEKLY RESET -->
+  <div id="screen-weekly-reset" class="screen">
+    <div class="topbar">
+      <div class="logo" onclick="goHome()">Clear<span>work</span></div>
+      <button class="btn-ghost btn-sm" onclick="showScreen('dashboard');renderDashboard()">← Dashboard</button>
+    </div>
+    <div class="reset-container">
+      <div class="reset-header">
+        <h2 class="reset-title">Weekly reset.</h2>
+        <p class="reset-sub">5 minutes. Honest answers. Then get on with it.</p>
+      </div>
+      <div id="reset-questions"></div>
+      <div style="display:flex;gap:10px;margin-top:8px;">
+        <button class="btn-primary" onclick="submitWeeklyReset()">Done →</button>
+        <button class="btn-ghost" onclick="showScreen('dashboard');renderDashboard()">Skip this week</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RETROSPECTIVE -->
+  <div id="screen-retro" class="screen">
+    <div class="topbar">
+      <div class="logo" onclick="goHome()">Clear<span>work</span></div>
+    </div>
+    <div class="retro-container">
+      <h2 class="retro-title" id="retro-title">90 days.</h2>
+      <p class="retro-sub">You set out to build something. Here's an honest look at what happened.</p>
+      <div id="retro-body"></div>
+    </div>
+  </div>
+
+
+  <!-- VISION BOARD -->
+  <div id="screen-visionboard" class="screen">
+    <div class="topbar">
+      <div class="logo" onclick="goHome()">Clear<span>work</span></div>
+      <div class="topbar-actions">
+        <button class="btn-ghost btn-sm" onclick="openAddCard()">+ Add</button>
+        <button class="btn-ghost btn-sm" onclick="showScreen('dashboard');renderDashboard()">← Dashboard</button>
+      </div>
+    </div>
+    <div id="vb-container" style="position:relative;min-height:calc(100vh - 60px);background:var(--paper);overflow:hidden;">
+      <div style="position:absolute;inset:0;background-image:radial-gradient(circle,var(--rule) 1px,transparent 1px);background-size:24px 24px;pointer-events:none;opacity:0.5;"></div>
+      <div id="vb-cards" style="position:absolute;inset:0;overflow:visible;"></div>
+      <div id="vb-empty" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:calc(100vh - 60px);text-align:center;padding:32px;position:relative;z-index:5;">
+        <p style="font-family:var(--user-font);font-size:22px;font-weight:400;margin-bottom:8px;color:var(--ink);">Your vision board.</p>
+        <p style="font-size:14px;color:var(--muted);max-width:280px;line-height:1.6;margin-bottom:24px;">A visual space for what you're building toward. Add words, images, colors — anything that represents where you're going.</p>
+        <button class="btn-primary" onclick="openAddCard()">Add your first card →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD CARD MODAL -->
+  <div class="modal-overlay" id="modal-add-card">
+    <div class="modal">
+      <h3 class="modal-title">Add to board.</h3>
+      <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+        <button class="tone-btn active" id="card-type-text" onclick="setCardType('text')">Word / phrase</button>
+        <button class="tone-btn" id="card-type-quote" onclick="setCardType('quote')">Quote</button>
+        <button class="tone-btn" id="card-type-color" onclick="setCardType('color')">Color block</button>
+        <button class="tone-btn" id="card-type-image" onclick="setCardType('image')">Image URL</button>
+        <button class="tone-btn" id="card-type-emoji" onclick="setCardType('emoji')">Emoji / symbol</button>
+      </div>
+      <div id="card-form-text">
+        <input id="card-text-input" class="modal-input" style="min-height:auto;padding:12px 0;font-size:20px;font-family:var(--user-font);" placeholder="Type a word or phrase…" />
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;" id="card-size-options">
+          <button class="tone-btn active" id="size-sm" onclick="setCardSize('sm')">Small</button>
+          <button class="tone-btn" id="size-md" onclick="setCardSize('md')">Medium</button>
+          <button class="tone-btn" id="size-lg" onclick="setCardSize('lg')">Large</button>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;align-items:center;" id="card-color-swatches-wrap">
+          <span style="font-size:12px;color:var(--muted);">Background:</span>
+          <div id="card-color-swatches" style="display:flex;gap:6px;flex-wrap:wrap;">
+            <div class="color-swatch active" style="background:var(--paper);border:1px solid var(--rule)" onclick="setCardBg('var(--paper)')" data-bg="paper"></div>
+            <div class="color-swatch" style="background:var(--cream)" onclick="setCardBg('var(--cream)')" data-bg="cream"></div>
+            <div class="color-swatch" style="background:#C4A882" onclick="setCardBg('#C4A882')" data-bg="#C4A882"></div>
+            <div class="color-swatch" style="background:#7B9E87" onclick="setCardBg('#7B9E87')" data-bg="#7B9E87"></div>
+            <div class="color-swatch" style="background:#7B8FA1" onclick="setCardBg('#7B8FA1')" data-bg="#7B8FA1"></div>
+            <div class="color-swatch" style="background:#0D0D0B" onclick="setCardBg('#0D0D0B')" data-bg="#0D0D0B"></div>
+            <div class="color-swatch" style="background:#C17A6F" onclick="setCardBg('#C17A6F')" data-bg="#C17A6F"></div>
+            <input type="color" style="width:28px;height:28px;border:1px solid var(--rule);border-radius:50%;padding:1px;cursor:pointer;" oninput="setCardBg(this.value)" />
+          </div>
+        </div>
+      </div>
+      <div id="card-form-quote" style="display:none">
+        <textarea id="card-quote-input" class="modal-input" rows="3" placeholder="A quote that resonates…" style="font-family:var(--user-font);font-style:italic;"></textarea>
+        <input id="card-quote-author" class="modal-input" style="min-height:auto;padding:10px 0;font-size:13px;" placeholder="— Author (optional)" />
+      </div>
+      <div id="card-form-color" style="display:none">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Choose a color for a solid block:</p>
+        <input type="color" id="card-color-input" value="#C4A882" style="width:100%;height:60px;border:none;cursor:pointer;border-radius:4px;" />
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button class="tone-btn active" id="block-sm" onclick="setBlockSize('sm')">Small</button>
+          <button class="tone-btn" id="block-md" onclick="setBlockSize('md')">Medium</button>
+          <button class="tone-btn" id="block-lg" onclick="setBlockSize('lg')">Large</button>
+        </div>
+      </div>
+      <div id="card-form-image" style="display:none">
+        <input id="card-image-input" class="modal-input" style="min-height:auto;padding:12px 0;" placeholder="Paste an image URL…" />
+        <p id="card-image-error" style="font-size:12px;color:var(--danger);margin-top:4px;display:none;">Image could not be loaded. Check the URL and try again.</p>
+        <p style="font-size:12px;color:var(--muted);margin-top:6px;">Right-click any image online → Copy image address.</p>
+      </div>
+      <div id="card-form-emoji" style="display:none">
+        <input id="card-emoji-input" class="modal-input" style="min-height:auto;padding:12px 0;font-size:40px;text-align:center;" placeholder="✦" maxlength="4" />
+      </div>
+      <div class="modal-actions" style="margin-top:20px;">
+        <button class="btn-ghost" onclick="closeAddCard()">Cancel</button>
+        <button class="btn-primary" onclick="addCardToBoard()">Add to board →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="screen-settings" class="screen">
+    <div class="topbar">
+      <div class="logo" onclick="goHome()">Clear<span>work</span></div>
+      <button class="btn-ghost btn-sm" onclick="showScreen('dashboard');renderDashboard()">← Dashboard</button>
+    </div>
+    <div class="settings-container">
+      <h2 class="settings-title">Settings</h2>
+
+      <div class="settings-section">
+        <p class="settings-section-title">Appearance</p>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Accent color</div>
+            <div class="settings-row-hint">Used for highlights and active states</div>
+          </div>
+          <div class="color-picker-wrap">
+            <div class="color-swatch" style="background:#C4A882" onclick="setAccent('#C4A882')" title="Warm brown"></div>
+            <div class="color-swatch" style="background:#7B9E87" onclick="setAccent('#7B9E87')" title="Forest green"></div>
+            <div class="color-swatch" style="background:#7B8FA1" onclick="setAccent('#7B8FA1')" title="Dusty blue"></div>
+            <div class="color-swatch" style="background:#C17A6F" onclick="setAccent('#C17A6F')" title="Terracotta"></div>
+            <div class="color-swatch" style="background:#9B7BB5" onclick="setAccent('#9B7BB5')" title="Dusty purple"></div>
+            <input type="color" id="custom-color" value="#C4A882" oninput="setAccent(this.value)" title="Custom color">
+          </div>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Font style</div>
+            <div class="settings-row-hint">Applied to headings and titles</div>
+          </div>
+          <div class="font-options">
+            <button class="font-btn active" id="font-playfair" onclick="setFont('playfair')" style="font-family:'Playfair Display',serif">Aa</button>
+            <button class="font-btn" id="font-lora" onclick="setFont('lora')" style="font-family:'Lora',serif">Aa</button>
+            <button class="font-btn" id="font-inter" onclick="setFont('inter')" style="font-family:'Inter',sans-serif">Aa</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <p class="settings-section-title">AI tone</p>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">How do you want feedback delivered?</div>
+            <div class="settings-row-hint">Applies to vision synthesis, runway, and check-ins</div>
+          </div>
+          <div class="tone-options">
+            <button class="tone-btn active" id="tone-nofluff" onclick="setTone('nofluff')">No fluff</button>
+            <button class="tone-btn" id="tone-balanced" onclick="setTone('balanced')">Balanced</button>
+            <button class="tone-btn" id="tone-guidance" onclick="setTone('guidance')">More guidance</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <p class="settings-section-title">Weekly reset</p>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Reset day</div>
+            <div class="settings-row-hint">When does your week feel like it starts?</div>
+          </div>
+          <div class="day-options">
+            <button class="day-btn" id="day-sun" onclick="setResetDay('sun')">Sun</button>
+            <button class="day-btn active" id="day-mon" onclick="setResetDay('mon')">Mon</button>
+            <button class="day-btn" id="day-tue" onclick="setResetDay('tue')">Tue</button>
+            <button class="day-btn" id="day-wed" onclick="setResetDay('wed')">Wed</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <p class="settings-section-title">About</p>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">AI disclosure</div>
+            <div class="settings-row-hint">Clearwork uses AI to synthesize your answers into personalized plans and feedback. It is not a chatbot — it is a structured thinking tool. Your answers are sent to Anthropic's API to generate responses and are not stored beyond your session.</div>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Version</div>
+            <div class="settings-row-hint">Clearwork v3.0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- NEW THOUGHT MODAL -->
+<div class="modal-overlay" id="modal-new-thought">
+  <div class="modal">
+    <h3 class="modal-title">New thought.</h3>
+    <p class="modal-sub">Tell me what's surfaced. Don't edit it — just say it.</p>
+    <textarea class="modal-input" id="new-thought-input" rows="4" placeholder="I've been thinking about…"></textarea>
+    <div id="new-thought-verdict" style="display:none"></div>
+    <div class="modal-actions" id="new-thought-actions">
+      <button class="btn-ghost" onclick="closeNewThought()">Cancel</button>
+      <button class="btn-primary" onclick="evaluateNewThought()">Check this →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE REVIEW MODAL -->
+<div class="modal-overlay" id="modal-phase-review">
+  <div class="modal">
+    <h3 class="modal-title" id="phase-review-title">Phase complete.</h3>
+    <p class="modal-sub" id="phase-review-sub">You finished a phase. Before moving forward, a quick honest check-in.</p>
+    <textarea class="modal-input" id="phase-review-input" rows="4" placeholder="What did you learn in this phase that changes what comes next?"></textarea>
+    <div id="phase-review-result" style="display:none"></div>
+    <div class="modal-actions" id="phase-review-actions">
+      <button class="btn-ghost" onclick="closePhaseReview()">Skip</button>
+      <button class="btn-primary" onclick="submitPhaseReview()">Continue →</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- EMAIL CAPTURE MODAL -->
+<div class="modal-overlay" id="modal-email-capture">
+  <div class="modal">
+    <h3 class="modal-title">Save your vision.</h3>
+    <p class="modal-sub">We'll send your full vision summary to your inbox — and save your work so you can access it on any device.</p>
+    <input type="email" id="email-capture-input" class="modal-input" style="min-height:auto;padding:12px 0;" placeholder="your@email.com" />
+    <div id="email-capture-message" style="font-size:13px;color:var(--success);display:none;margin-bottom:8px;"></div>
+    <div class="modal-actions" id="email-capture-actions">
+      <button class="btn-ghost" onclick="skipEmailCapture()">Skip for now</button>
+      <button class="btn-primary" onclick="submitEmailCapture()">Send my vision →</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESTORE SESSION MODAL -->
+<div class="modal-overlay" id="modal-restore-session">
+  <div class="modal">
+    <h3 class="modal-title">Welcome back.</h3>
+    <p class="modal-sub">Enter your email to restore your vision and projects on this device.</p>
+    <input type="email" id="restore-email-input" class="modal-input" style="min-height:auto;padding:12px 0;" placeholder="your@email.com" />
+    <div id="restore-message" style="font-size:13px;color:var(--danger);display:none;margin-bottom:8px;"></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeRestoreSession()">Cancel</button>
+      <button class="btn-primary" onclick="submitRestoreSession()">Restore →</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+
+// ═══════════════════════════════════
+// API SERVICE LAYER
+// ═══════════════════════════════════
+const API = {
+  base: '/.netlify/functions',
+  async call(endpoint, body) {
+    const response = await fetch(this.base + '/' + endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body || {})
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error || 'API request failed: ' + endpoint);
+    }
+    return response.json();
+  },
+  generateVision(data)      { return this.call('vision', data); },
+  generateRunway(data)      { return this.call('runway', data); },
+  generateNewThought(data)  { return this.call('newthought', data); },
+  generatePhaseReview(data) { return this.call('phasereview', data); },
+  generateRetro(data)       { return this.call('retro', data); },
+  captureEmail(data)        { return this.call('capture-email', data); },
+  saveProject(data)         { return this.call('save-project', data); },
+  restoreSession(data)      { return this.call('restore-session', data); }
+};
+
+// ═══════════════════════════════════
+// STATE
+// ═══════════════════════════════════
+let current = 0;
+let answers = {};
+let projects = [];
+let somedayItems = [];
+let activeProjectId = null;
+let selectedPrice = 'monthly';
+let inTrial = false;
+let settings = { accent: '#C4A882', font: 'playfair', tone: 'nofluff', resetDay: 'mon' };
+let weeklyResets = [];
+let phaseReviewProjectId = null;
+let phaseReviewPhaseIndex = null;
+let userEmail = localStorage.getItem('cw-email') || null;
+let pendingPaywall = false;
+let currentVision = null;
+
+// ═══════════════════════════════════
+// QUESTIONS
+// ═══════════════════════════════════
+const QUESTIONS = [
+  { section:'The thing', id:'q-name', text:'Give it a name. What are you calling this thing you\'re building?', hint:'Working title is fine. It doesn\'t need to be final.', placeholder:'The name in my head right now is…' },
+  { section:'The thing', id:'q-what', text:'In one or two sentences — what is it, exactly?', hint:'Pretend you\'re texting a smart friend who\'s never heard of it.', placeholder:'It\'s basically…' },
+  { section:'The thing', id:'q-different', text:'What makes this different from everything else out there?', hint:'Even a small difference counts. What\'s the thing that makes it yours?', placeholder:'The difference is…' },
+  { section:'The person', id:'q-who', text:'Describe the person you\'re building this for. Be specific.', hint:'Age, situation, how they spend their days. The more concrete, the better.', placeholder:'They\'re someone who…' },
+  { section:'The person', id:'q-problem', text:'What keeps them up at night? What\'s the real problem this solves?', hint:'Not the surface problem — the one underneath it.', placeholder:'The real thing they\'re struggling with is…' },
+  { section:'Your why', id:'q-why', text:'Why are you the one to build this?', hint:'What in your life, experience, or perspective makes you right for this?', placeholder:'I know this because…' },
+  { section:'Your why', id:'q-afraid', text:'What\'s the thing you\'re most afraid won\'t work?', hint:'Be honest. This is the thing worth naming.', placeholder:'My honest fear is…' },
+  { section:'The horizon', id:'q-90days', text:'If this goes well, what does 90 days from now look like?', hint:'Be specific and real — not a dream, a milestone.', placeholder:'In 90 days I\'ll know it\'s working if…' }
+];
+const SECTIONS = [...new Set(QUESTIONS.map(q => q.section))];
+
+const TONE_INSTRUCTIONS = {
+  nofluff: "Tone: direct and brief. No filler words. Say exactly what needs to be said and stop.",
+  balanced: "Tone: balanced — clear and direct but not terse. A sentence of context where it adds clarity.",
+  guidance: "Tone: supportive and thorough. Explain the reasoning behind observations. More guidance, not just conclusions."
+};
+
+const WEEKLY_QUESTIONS = [
+  { id:'w-done', text:'What did you actually get done last week?', hint:'Not what you planned — what actually happened.', placeholder:'I finished…' },
+  { id:'w-blocked', text:'What got in the way?', hint:'Be honest. External obstacles or internal ones.', placeholder:'The thing that slowed me was…' },
+  { id:'w-one', text:'What is the one thing this week?', hint:'If you only do one thing, what moves the needle most.', placeholder:'This week I will…' },
+  { id:'w-vision', text:'Is your vision still right, or has something shifted?', hint:'Quick gut check. Still building the same thing?', placeholder:'My vision feels…' },
+  { id:'w-honest', text:'What are you avoiding?', hint:'The thing you know you need to do but keep pushing.', placeholder:'If I\'m honest, I keep avoiding…' }
+];
+
+// ═══════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════
+function save() {
+  try {
+    localStorage.setItem('cw-answers', JSON.stringify(answers));
+    localStorage.setItem('cw-projects', JSON.stringify(projects));
+    localStorage.setItem('cw-someday', JSON.stringify(somedayItems));
+    localStorage.setItem('cw-trial', inTrial ? '1' : '');
+    localStorage.setItem('cw-settings', JSON.stringify(settings));
+    localStorage.setItem('cw-resets', JSON.stringify(weeklyResets));
+  } catch(e) {}
+  clearTimeout(save._timer);
+  save._timer = setTimeout(cloudSave, 2000);
+}
+function load() {
+  try {
+    answers = JSON.parse(localStorage.getItem('cw-answers') || '{}');
+    projects = JSON.parse(localStorage.getItem('cw-projects') || '[]');
+    somedayItems = JSON.parse(localStorage.getItem('cw-someday') || '[]');
+    inTrial = !!localStorage.getItem('cw-trial');
+    const s = localStorage.getItem('cw-settings');
+    if (s) settings = { ...settings, ...JSON.parse(s) };
+    const r = localStorage.getItem('cw-resets');
+    if (r) weeklyResets = JSON.parse(r);
+    const savedActive = localStorage.getItem('cw-active-project');
+    if (savedActive) {
+      const found = projects.find(p => p.id == savedActive);
+      if (found) activeProjectId = found.id;
+    }
+    if (!activeProjectId && projects.length === 1) activeProjectId = projects[0].id;
+  } catch(e) {}
+}
+
+// ═══════════════════════════════════
+// SETTINGS & CUSTOMIZATION
+// ═══════════════════════════════════
+function applySettings() {
+  const root = document.documentElement;
+  root.style.setProperty('--user-accent', settings.accent);
+  const fonts = {
+    playfair: "'Playfair Display', Georgia, serif",
+    lora: "'Lora', Georgia, serif",
+    inter: "'Inter', system-ui, sans-serif"
+  };
+  root.style.setProperty('--user-font', fonts[settings.font] || fonts.playfair);
+  document.getElementById('custom-color').value = settings.accent;
+}
+
+function setAccent(color) {
+  settings.accent = color;
+  applySettings();
+  save();
+  document.querySelectorAll('.color-swatch').forEach(s => {
+    s.classList.toggle('active', s.style.background === color || s.style.background.replace(/\s/g,'') === color);
+  });
+}
+
+function setFont(font) {
+  settings.font = font;
+  applySettings();
+  save();
+  document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById('font-' + font);
+  if (el) el.classList.add('active');
+}
+
+function setTone(tone) {
+  settings.tone = tone;
+  save();
+  document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById('tone-' + tone);
+  if (el) el.classList.add('active');
+}
+
+function setResetDay(day) {
+  settings.resetDay = day;
+  save();
+  document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById('day-' + day);
+  if (el) el.classList.add('active');
+}
+
+function renderSettings() {
+  document.getElementById('custom-color').value = settings.accent;
+  document.querySelectorAll('.color-swatch').forEach(s => {
+    const sw = s.style.background.replace(/\s/g,'');
+    const acc = settings.accent.replace(/\s/g,'');
+    s.classList.toggle('active', sw === acc);
+  });
+  document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('active'));
+  const fb = document.getElementById('font-' + settings.font);
+  if (fb) fb.classList.add('active');
+  document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('active'));
+  const tb = document.getElementById('tone-' + settings.tone);
+  if (tb) tb.classList.add('active');
+  document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+  const db = document.getElementById('day-' + settings.resetDay);
+  if (db) db.classList.add('active');
+}
+
+// ═══════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen-' + name);
+  if (el) el.classList.add('active');
+  window.scrollTo(0,0);
+}
+function goHome() {
+  if (inTrial) {
+    showScreen('dashboard');
+    renderDashboard();
+  } else if (document.getElementById('screen-vision').classList.contains('active')) {
+    return;
+  } else if (projects.length > 0 || Object.keys(answers).length > 0) {
+    showScreen('vision');
+  } else {
+    showScreen('splash');
+  }
+}
+
+// ═══════════════════════════════════
+// VISION SESSION
+// ═══════════════════════════════════
+function startSession(fresh = false) {
+  if (fresh) { answers = {}; try { localStorage.removeItem('cw-answers'); } catch(e) {} }
+  else load();
+  current = 0;
+  showScreen('questions');
+  renderQuestion();
+}
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  document.getElementById('q-section-label').textContent = q.section;
+  document.getElementById('q-number').textContent = "Question " + (current + 1) + " of " + QUESTIONS.length;
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('q-hint').textContent = q.hint;
+  const inp = document.getElementById('q-input');
+  inp.placeholder = q.placeholder || 'Write freely…';
+  inp.value = answers[q.id] || '';
+  inp.focus();
+  updateCharCount(inp);
+  document.getElementById('btn-back').style.visibility = current === 0 ? 'hidden' : 'visible';
+  document.getElementById('btn-next').textContent = current === QUESTIONS.length - 1 ? 'See my vision →' : 'Next →';
+  const dots = document.getElementById('progress-dots');
+  dots.innerHTML = '';
+  QUESTIONS.forEach((_,i) => {
+    const d = document.createElement('div');
+    d.className = 'prog-dot' + (i < current ? ' done' : '') + (i === current ? ' active' : '');
+    dots.appendChild(d);
+  });
+  const nav = document.getElementById('section-nav');
+  nav.innerHTML = '';
+  SECTIONS.forEach(sec => {
+    const btn = document.createElement('button');
+    btn.className = 'sec-tab';
+    btn.textContent = sec;
+    const secQs = QUESTIONS.filter(q => q.section === sec);
+    if (secQs.every(q => answers[q.id])) btn.classList.add('done');
+    if (QUESTIONS[current].section === sec) btn.classList.add('active');
+    btn.onclick = () => { saveCurrentAnswer(); current = QUESTIONS.findIndex(q => q.section === sec); renderQuestion(); };
+    nav.appendChild(btn);
+  });
+}
+function handleInput(el) { updateCharCount(el); }
+function updateCharCount(el) {
+  const c = document.getElementById('char-count');
+  c.textContent = el.value.length;
+  c.className = 'q-char-count' + (el.value.length > 0 ? ' active' : '');
+}
+function saveCurrentAnswer() {
+  const val = document.getElementById('q-input').value.trim();
+  if (val) answers[QUESTIONS[current].id] = val;
+  save();
+}
+function goNext() {
+  saveCurrentAnswer();
+  if (current < QUESTIONS.length - 1) { current++; renderQuestion(); }
+  else { showScreen('vision'); buildVisionAI(); }
+}
+function goBack() { saveCurrentAnswer(); if (current > 0) { current--; renderQuestion(); } }
+function skipQuestion() { if (current < QUESTIONS.length - 1) { current++; renderQuestion(); } else { showScreen('vision'); buildVisionAI(); } }
+function goToQuestions() { showScreen('questions'); renderQuestion(); }
+
+// ═══════════════════════════════════
+// VISION AI
+// ═══════════════════════════════════
+function setVisionLoading(on) {
+  const body = document.getElementById('vision-body');
+  const row = document.querySelector('.vision-actions-row');
+  const disc = document.querySelector('.ai-disclosure');
+  if (on) {
+    body.innerHTML = '<div class="loading-state"><div class="thinking-dots"><span></span><span></span><span></span></div><p class="loading-text">Reading your answers and building your vision…</p></div>';
+    if (row) row.style.display = 'none';
+    if (disc) disc.style.display = 'none';
+  } else {
+    if (row) row.style.display = 'flex';
+    if (disc) disc.style.display = 'block';
+  }
+}
+async function buildVisionAI() {
+  const a = answers;
+  document.getElementById('vision-title').textContent = a['q-name'] || 'Your project';
+  document.getElementById('vision-date').textContent = new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
+  setVisionLoading(true);
+  try {
+    const res = await API.generateVision({ answers: a, tone: settings.tone });
+    const vision = res;
+    // vision already parsed by api layer
+    setVisionLoading(false);
+    renderVisionOutput(vision);
+    if (a['q-name']) {
+      const existing = projects.find(p => p.name === a['q-name']);
+      if (!existing) {
+        const project = { id: Date.now(), name: a['q-name'], vision, answers: {...a}, created: new Date().toISOString(), status: 'active', milestones: [], subtasks: {}, phaseNames: {}, runway: null };
+        projects.push(project);
+        activeProjectId = project.id;
+        localStorage.setItem('cw-active-project', project.id);
+        save();
+      }
+    }
+  } catch(err) {
+    setVisionLoading(false);
+    renderVisionFallback(a);
+    setTimeout(() => { if (!userEmail) openEmailCapture(); }, 1500);
+  }
+}
+function renderVisionOutput(v) {
+  currentVision = v;
+  const body = document.getElementById('vision-body');
+  body.innerHTML =
+    '<div class="vision-block"><p class="vision-block-label">What I\'m building</p><p class="vision-block-text">' + (v.what||'—') + '</p></div>' +
+    '<div class="vision-block"><p class="vision-block-label">Who it\'s for</p><p class="vision-block-text">' + (v.who||'—') + '</p></div>' +
+    '<div class="vision-block"><p class="vision-block-label">Why it matters</p><p class="vision-block-text">' + (v.why||'—') + '</p></div>' +
+    '<div class="vision-block"><p class="vision-block-label">What success looks like in 90 days</p><p class="vision-block-text">' + (v.success||'—') + '</p></div>' +
+    (v.insight ? '<div class="insight-box"><p class="vision-block-label">Something worth noting</p><p class="vision-block-text">' + v.insight + '</p></div>' : '') +
+    '<div class="rule-divider"></div><div class="vision-block"><p class="vision-block-label">First 3 actions</p><ol class="action-list" id="out-actions"></ol></div>';
+  const list = document.getElementById('out-actions');
+  (v.actions||[]).forEach((action,i) => {
+    const li = document.createElement('li');
+    li.className = 'action-item';
+    li.innerHTML = '<span class="action-num">0' + (i+1) + '</span><div><p class="action-text">' + action.text + '</p><span class="action-tag">' + action.tag + '</span></div>';
+    list.appendChild(li);
+  });
+}
+function renderVisionFallback(a) {
+  currentVision = null;
+  const body = document.getElementById('vision-body');
+  body.innerHTML =
+    '<div class="vision-block"><p class="vision-block-label">What I\'m building</p><p class="vision-block-text">' + (a['q-what']||'—') + '</p></div>' +
+    '<div class="vision-block"><p class="vision-block-label">Who it\'s for</p><p class="vision-block-text">' + (a['q-who']||'—') + '</p></div>' +
+    '<div class="vision-block"><p class="vision-block-label">Why it matters</p><p class="vision-block-text">' + (a['q-why']||'—') + '</p></div>' +
+    '<div class="vision-block"><p class="vision-block-label">What success looks like in 90 days</p><p class="vision-block-text">' + (a['q-90days']||'—') + '</p></div>' +
+    '<div class="rule-divider"></div><div class="vision-block"><p class="vision-block-label">First 3 actions</p><ol class="action-list" id="out-actions"></ol></div>';
+  const list = document.getElementById('out-actions');
+  [
+    {text: "Write a one-paragraph description of " + (a['q-name']||'your project') + " you could say to a stranger.", tag:'Clarity'},
+    {text: "Find three real people who need what you're building. Talk to them first.", tag:'Research'},
+    {text: "Work backwards from your 90-day goal. What's the one thing to finish this week?", tag:'Focus'}
+  ].forEach((action,i) => {
+    const li = document.createElement('li');
+    li.className = 'action-item';
+    li.innerHTML = '<span class="action-num">0' + (i+1) + '</span><div><p class="action-text">' + action.text + '</p><span class="action-tag">' + action.tag + '</span></div>';
+    list.appendChild(li);
+  });
+}
+
+// ═══════════════════════════════════
+// PAYWALL
+// ═══════════════════════════════════
+function showPaywall() {
+  if (!userEmail) {
+    pendingPaywall = true;
+    openEmailCapture();
+  } else {
+    showScreen('paywall');
+  }
+}
+function selectPrice(type) {
+  selectedPrice = type;
+  document.getElementById('price-monthly').classList.toggle('selected', type === 'monthly');
+  document.getElementById('price-annual').classList.toggle('selected', type === 'annual');
+}
+function startTrial() {
+  const url = selectedPrice === 'annual'
+    ? 'https://oddlyuseful.co/checkout/buy/d5ecba1f-056b-4ab7-9d59-2dbbcc09d052'
+    : 'https://oddlyuseful.co/checkout/buy/5ffc8171-48ee-4937-9191-1c73f44a7d57';
+  const emailParam = userEmail ? '?checkout[email]=' + encodeURIComponent(userEmail) : '';
+  window.open(url + emailParam, '_blank');
+  showPaymentPending();
+}
+
+function showPaymentPending() {
+  const paywall = document.querySelector('#screen-paywall .paywall');
+  if (!paywall) return;
+  const html = '<div style="text-align:center;max-width:400px;">'
+    + '<div style="width:56px;height:56px;border-radius:50%;background:var(--cream);border:1px solid var(--rule);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:22px;">&#10022;</div>'
+    + '<p style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">Checkout opened</p>'
+    + '<h2 style="font-family:var(--serif);font-size:28px;font-weight:400;line-height:1.2;margin-bottom:12px;">Complete your payment in the other tab.</h2>'
+    + '<p style="font-size:15px;color:var(--muted);line-height:1.6;margin-bottom:36px;">Once finished, come back and click below.</p>'
+    + '<button class="btn-primary" style="width:100%;justify-content:center;margin-bottom:12px;" onclick="activateAccess()">Payment complete &#8594;</button>'
+    + '<button class="btn-text" onclick="location.reload()" style="font-size:12px;">Did not complete? Start over</button>'
+    + '</div>';
+  paywall.innerHTML = html;
+}
+
+function activateAccess() {
+  inTrial = true;
+  save();
+  showToast('Access activated! Welcome to Clearwork.');
+  showScreen('dashboard');
+  renderDashboard();
+  if (activeProjectId) buildRunwayAI();
+}
+
+// ═══════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════
+function renderDashboard() {
+  const container = document.getElementById('active-projects');
+  container.innerHTML = '';
+  const active = projects.filter(p => p.status === 'active');
+  if (active.length === 0) {
+    container.innerHTML = '<p class="empty-state">No active projects yet. Complete a vision session to get started.</p>';
+  } else {
+    active.forEach(p => {
+      const done = p.milestones ? p.milestones.filter(m => m.checked).length : 0;
+      const total = p.milestones ? p.milestones.length : 0;
+      const pct = total > 0 ? Math.round((done/total)*100) : 0;
+      const daysIn = Math.floor((Date.now() - new Date(p.created).getTime()) / 86400000);
+      const card = document.createElement('div');
+      card.className = 'dash-card';
+      card.innerHTML =
+        '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">' +
+          '<div style="flex:1">' +
+            '<div class="dash-card-title">' + p.name + '</div>' +
+            '<div class="dash-card-meta">' +
+              '<span>Day ' + daysIn + ' of 90</span>' +
+              (total > 0 ? '<span>' + done + '/' + total + ' milestones</span>' : '') +
+            '</div>' +
+            (total > 0 ? '<div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:' + pct + '%"></div></div>' : '') +
+          '</div>' +
+          '<span class="dash-card-tag tag-active">Active</span>' +
+        '</div>';
+      card.onclick = () => { activeProjectId = p.id; showRunway(p); };
+      container.appendChild(card);
+    });
+  }
+
+  // Weekly reset nudge
+  const resetSection = document.getElementById('weekly-reset-section');
+  const resetCard = document.getElementById('weekly-reset-card');
+  if (inTrial && active.length > 0) {
+    resetSection.style.display = 'block';
+    const lastReset = weeklyResets[weeklyResets.length - 1];
+    const daysSince = lastReset ? Math.floor((Date.now() - new Date(lastReset.date).getTime()) / 86400000) : 999;
+    if (daysSince >= 6) {
+      resetCard.innerHTML =
+        '<div class="dash-card" onclick="startWeeklyReset()" style="border-color:var(--user-accent)">' +
+          '<div class="dash-card-title">Time for your weekly reset</div>' +
+          '<div class="dash-card-meta"><span>5 minutes. Keep your momentum.</span></div>' +
+        '</div>';
+    } else {
+      resetCard.innerHTML =
+        '<div class="dash-card" onclick="startWeeklyReset()">' +
+          '<div class="dash-card-title">Weekly reset done</div>' +
+          '<div class="dash-card-meta"><span>' + daysSince + ' days ago</span></div>' +
+        '</div>';
+    }
+  } else {
+    resetSection.style.display = 'none';
+  }
+
+  // Someday list
+  const somedaySection = document.getElementById('someday-section');
+  const somedayList = document.getElementById('someday-list');
+  if (somedayItems.length > 0) {
+    somedaySection.style.display = 'block';
+    somedayList.innerHTML = '';
+    somedayItems.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'someday-item';
+      div.innerHTML = '<div class="someday-dot"></div><div><div class="someday-text">' + item.text + '</div><div class="someday-date">' + item.date + '</div></div>';
+      somedayList.appendChild(div);
+    });
+  } else {
+    somedaySection.style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════
+// PROJECT RUNWAY
+// ═══════════════════════════════════
+async function buildRunwayAI() {
+  const project = projects.find(p => p.id === activeProjectId);
+  if (!project) return;
+  showScreen('runway');
+  document.getElementById('runway-content').innerHTML = '<div class="loading-state"><div class="thinking-dots"><span></span><span></span><span></span></div><p class="loading-text">Building your 90-day runway…</p></div>';
+  try {
+    const runway = await API.generateRunway({ answers: project.answers, vision: project.vision, tone: settings.tone });
+    project.runway = runway;
+    project.milestones = runway.phases.flatMap(ph => ph.milestones.map(m => ({...m, checked: false, phase: ph.phase})));
+    if (!project.subtasks) project.subtasks = {};
+    if (!project.phaseNames) project.phaseNames = {};
+    save();
+    showRunway(project);
+  } catch(err) {
+    document.getElementById('runway-content').innerHTML = '<p style="color:var(--muted);font-style:italic;padding:24px 0;">Couldn\'t build the runway right now. Try again in a moment.</p><button class="btn-ghost" onclick="buildRunwayAI()">Retry</button>';
+  }
+}
+
+function showRunway(project) {
+  showScreen('runway');
+  const content = document.getElementById('runway-content');
+  if (!project.runway) {
+    content.innerHTML = '<div class="loading-state"><div class="thinking-dots"><span></span><span></span><span></span></div><p class="loading-text">Building your runway…</p></div>';
+    return;
+  }
+  const r = project.runway;
+  const startDate = new Date(project.created);
+  const daysIn = Math.floor((Date.now() - startDate.getTime()) / 86400000);
+  const doneMilestones = project.milestones ? project.milestones.filter(m => m.checked).length : 0;
+  const totalMilestones = project.milestones ? project.milestones.length : 0;
+  const pct = totalMilestones > 0 ? Math.round((doneMilestones/totalMilestones)*100) : 0;
+  const allDone = totalMilestones > 0 && doneMilestones === totalMilestones;
+
+  let html = '<div class="runway-header">' +
+    '<div class="runway-title">' + project.name + '</div>' +
+    '<div class="runway-meta">' +
+      '<span>Day ' + daysIn + ' of 90</span>' +
+      '<span>' + pct + '% complete</span>' +
+    '</div>' +
+    '<div class="progress-bar-wrap" style="margin-top:10px"><div class="progress-bar-fill" style="width:' + pct + '%"></div></div>' +
+  '</div>';
+
+  if (allDone && daysIn >= 85) {
+    html += '<div class="review-banner"><div class="review-banner-title">90 days done.</div><div class="review-banner-sub">You finished your runway. Time to look back at what you built.</div><button class="btn-primary" onclick="startRetrospective()">Start retrospective →</button></div>';
+  }
+
+  if (r.thisWeek && r.thisWeek.length > 0) {
+    html += '<div class="this-week-block"><p class="this-week-label">This week</p><ol class="action-list">';
+    r.thisWeek.forEach((action,i) => {
+      html += '<li class="action-item"><span class="action-num">0' + (i+1) + '</span><div><p class="action-text">' + action.text + '</p><span class="action-tag">' + action.tag + '</span></div></li>';
+    });
+    html += '</ol></div>';
+  }
+
+  r.phases.forEach((phase, pi) => {
+    const phaseMilestones = project.milestones ? project.milestones.filter(m => m.phase === phase.phase) : [];
+    const phaseDone = phaseMilestones.filter(m => m.checked).length;
+    const phaseTotal = phaseMilestones.length;
+    const phaseComplete = phaseTotal > 0 && phaseDone === phaseTotal;
+    const customName = project.phaseNames && project.phaseNames[pi] ? project.phaseNames[pi] : phase.title;
+
+    html += '<div class="phase-block">' +
+      '<div class="phase-header">' +
+        '<span class="phase-number">Phase ' + phase.phase + '</span>' +
+        '<span class="phase-title-text" onclick="renamePhase(' + project.id + ',' + pi + ',this)" title="Click to rename">' + customName + '</span>' +
+        '<span class="phase-dates">Days ' + (pi*30+1) + '–' + ((pi+1)*30) + '</span>' +
+        (phaseComplete ? '<span class="phase-complete-badge">Complete</span>' : '') +
+      '</div>' +
+      '<p style="font-size:13px;color:var(--muted);margin-bottom:14px;font-style:italic;">' + phase.focus + '</p>';
+
+    phase.milestones.forEach(m => {
+      const saved = project.milestones.find(ms => ms.id === m.id);
+      const isChecked = saved ? saved.checked : false;
+      const subtasks = (project.subtasks && project.subtasks[m.id]) || [];
+      const subtasksDone = subtasks.filter(s => s.checked).length;
+      const subtasksTotal = subtasks.length;
+
+      html += '<div class="milestone-item">' +
+        '<div class="milestone-row">' +
+          '<div class="milestone-check ' + (isChecked ? 'checked' : '') + '" onclick="toggleMilestone(' + project.id + ',\'' + m.id + '\',this)"></div>' +
+          '<div style="flex:1">' +
+            '<p class="milestone-text ' + (isChecked ? 'checked' : '') + '">' + m.text + '</p>' +
+            '<div style="display:flex;gap:8px;align-items:center">' +
+              '<p class="milestone-week">Week ' + m.week + '</p>' +
+              (subtasksTotal > 0 ? '<span style="font-size:11px;color:var(--muted)">' + subtasksDone + '/' + subtasksTotal + ' tasks</span>' : '') +
+            '</div>' +
+          '</div>' +
+        '</div>';
+
+      if (subtasks.length > 0) {
+        html += '<div class="subtask-list">';
+        subtasks.forEach((st, si) => {
+          html += '<div class="subtask-item">' +
+            '<div class="subtask-check ' + (st.checked ? 'checked' : '') + '" onclick="toggleSubtask(' + project.id + ',\'' + m.id + '\',' + si + ',this)"></div>' +
+            '<span class="subtask-text ' + (st.checked ? 'checked' : '') + '">' + st.text + '</span>' +
+            '<span class="subtask-delete" onclick="deleteSubtask(' + project.id + ',\'' + m.id + '\',' + si + ')">✕</span>' +
+          '</div>';
+        });
+        html += '</div>';
+      }
+
+      if (!isChecked) {
+        html += '<div class="add-subtask-row">' +
+          '<input class="add-subtask-input" placeholder="+ Add a task…" onkeydown="if(event.key===\'Enter\'){addSubtask(' + project.id + ',\'' + m.id + '\',this);}" />' +
+          '<button class="add-subtask-btn" onclick="addSubtask(' + project.id + ',\'' + m.id + '\',this.previousElementSibling)">Add</button>' +
+        '</div>';
+      }
+
+      html += '</div>';
+    });
+
+    html += '</div>';
+  });
+
+  html += '<div class="runway-actions-row">' +
+    '<button class="btn-ghost" onclick="openNewThought()">✦ New thought</button>' +
+    '<button class="btn-ghost" onclick="startWeeklyReset()">Weekly reset</button>' +
+    '</div>' +
+    '<p style="font-size:11px;color:var(--muted);margin-top:8px;padding-bottom:24px;">AI-generated plan based on your vision session answers.</p>';
+
+  content.innerHTML = html;
+}
+
+function renamePhase(projectId, phaseIndex, el) {
+  const current = el.textContent;
+  const input = document.createElement('input');
+  input.value = current;
+  input.style.cssText = 'font-family:var(--user-font);font-size:18px;border:none;border-bottom:2px solid var(--ink);background:transparent;outline:none;width:200px;';
+  el.replaceWith(input);
+  input.focus();
+  input.onblur = () => {
+    const project = projects.find(p => p.id == projectId);
+    if (project) {
+      if (!project.phaseNames) project.phaseNames = {};
+      project.phaseNames[phaseIndex] = input.value || current;
+      save();
+    }
+    input.replaceWith(el);
+    el.textContent = input.value || current;
+  };
+  input.onkeydown = e => { if (e.key === 'Enter') input.blur(); };
+}
+
+// ═══════════════════════════════════
+// SUBTASKS
+// ═══════════════════════════════════
+function addSubtask(projectId, milestoneId, inputEl) {
+  const text = inputEl.value.trim();
+  if (!text) return;
+  const project = projects.find(p => p.id == projectId);
+  if (!project) return;
+  if (!project.subtasks) project.subtasks = {};
+  if (!project.subtasks[milestoneId]) project.subtasks[milestoneId] = [];
+  project.subtasks[milestoneId].push({ text, checked: false, id: Date.now() });
+  save();
+  inputEl.value = '';
+  showRunway(project);
+}
+
+function toggleSubtask(projectId, milestoneId, subtaskIndex, el) {
+  const project = projects.find(p => p.id == projectId);
+  if (!project || !project.subtasks || !project.subtasks[milestoneId]) return;
+  project.subtasks[milestoneId][subtaskIndex].checked = !project.subtasks[milestoneId][subtaskIndex].checked;
+  save();
+  el.classList.toggle('checked', project.subtasks[milestoneId][subtaskIndex].checked);
+  const textEl = el.nextElementSibling;
+  if (textEl) textEl.classList.toggle('checked', project.subtasks[milestoneId][subtaskIndex].checked);
+}
+
+function deleteSubtask(projectId, milestoneId, subtaskIndex) {
+  const project = projects.find(p => p.id == projectId);
+  if (!project || !project.subtasks || !project.subtasks[milestoneId]) return;
+  project.subtasks[milestoneId].splice(subtaskIndex, 1);
+  save();
+  showRunway(project);
+}
+
+// ═══════════════════════════════════
+// MILESTONE TOGGLE + CELEBRATION
+// ═══════════════════════════════════
+function toggleMilestone(projectId, milestoneId, el) {
+  const project = projects.find(p => p.id == projectId);
+  if (!project) return;
+  const m = project.milestones.find(m => m.id === milestoneId);
+  if (!m) return;
+  m.checked = !m.checked;
+  save();
+
+  if (m.checked) {
+    el.classList.add('checked');
+    const textEl = el.parentElement.querySelector('.milestone-text');
+    if (textEl) textEl.classList.add('checked');
+    checkPhaseCelebration(project, m.phase);
+    checkPhaseComplete(project, m.phase);
+  } else {
+    el.classList.remove('checked');
+    const textEl = el.parentElement.querySelector('.milestone-text');
+    if (textEl) textEl.classList.remove('checked');
+  }
+}
+
+function checkPhaseCelebration(project, phaseNum) {
+  const phaseMilestones = project.milestones.filter(m => m.phase === phaseNum);
+  const done = phaseMilestones.filter(m => m.checked).length;
+  const total = phaseMilestones.length;
+  if (done === total && total > 0) {
+    showToast('Phase ' + phaseNum + ' complete! ✦');
+    phaseReviewProjectId = project.id;
+    phaseReviewPhaseIndex = phaseNum - 1;
+    setTimeout(() => openPhaseReview(project, phaseNum), 1200);
+  } else {
+    const allDone = project.milestones.filter(m => m.checked).length;
+    if (allDone % 4 === 0 && allDone > 0) {
+      showToast('Milestone done ✦');
+    }
+  }
+}
+
+function checkPhaseComplete(project, phaseNum) {
+  const phaseMilestones = project.milestones.filter(m => m.phase === phaseNum);
+  const allComplete = phaseMilestones.length > 0 && phaseMilestones.every(m => m.checked);
+  return allComplete;
+}
+
+// ═══════════════════════════════════
+// PHASE REVIEW
+// ═══════════════════════════════════
+function openPhaseReview(project, phaseNum) {
+  const phaseTitle = project.runway && project.runway.phases[phaseNum-1] ? project.runway.phases[phaseNum-1].title : 'Phase ' + phaseNum;
+  document.getElementById('phase-review-title').textContent = 'Phase ' + phaseNum + ' done.';
+  document.getElementById('phase-review-sub').textContent = 'You finished "' + phaseTitle + '". Quick check: what did you learn that might change what comes next?';
+  document.getElementById('phase-review-input').value = '';
+  document.getElementById('phase-review-result').style.display = 'none';
+  document.getElementById('phase-review-actions').innerHTML = '<button class="btn-ghost" onclick="closePhaseReview()">Skip</button><button class="btn-primary" onclick="submitPhaseReview()">Continue →</button>';
+  document.getElementById('modal-phase-review').classList.add('active');
+}
+function closePhaseReview() { document.getElementById('modal-phase-review').classList.remove('active'); }
+async function submitPhaseReview() {
+  const learning = document.getElementById('phase-review-input').value.trim();
+  if (!learning) { closePhaseReview(); return; }
+  const result = document.getElementById('phase-review-result');
+  result.style.display = 'block';
+  result.innerHTML = '<div class="loading-state" style="min-height:60px"><div class="thinking-dots"><span></span><span></span><span></span></div></div>';
+  document.getElementById('phase-review-actions').innerHTML = '';
+  const project = projects.find(p => p.id === phaseReviewProjectId);
+  try {
+    const data = await API.generatePhaseReview({ learning, project: project ? { name: project.name, vision: project.vision, phaseNum: phaseReviewPhaseIndex + 1 } : null, tone: settings.tone });
+    result.innerHTML = '<div class="review-banner"><div class="review-banner-title">' + (data.title || 'Noted.') + '</div><p style="font-size:14px;color:var(--muted);line-height:1.5;">' + (data.insight || '') + '</p></div>';
+    document.getElementById('phase-review-actions').innerHTML = '<button class="btn-primary" onclick="closePhaseReview();showRunway(projects.find(p=>p.id===activeProjectId))">Continue to Phase ' + (phaseReviewPhaseIndex + 2) + ' →</button>';
+  } catch(err) {
+    result.style.display = 'block';
+    result.innerHTML = '<p style="font-size:13px;color:var(--muted);padding:8px 0;">Something did not connect. Your work is still saved — please try again.</p>';
+    document.getElementById('phase-review-actions').innerHTML = '<button class="btn-ghost" onclick="closePhaseReview()">Close</button><button class="btn-primary" onclick="submitPhaseReview()">Try again →</button>';
+  }
+}
+
+// ═══════════════════════════════════
+// WEEKLY RESET
+// ═══════════════════════════════════
+function startWeeklyReset() {
+  showScreen('weekly-reset');
+  const container = document.getElementById('reset-questions');
+  container.innerHTML = '';
+  WEEKLY_QUESTIONS.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'reset-q';
+    div.innerHTML = '<p class="reset-q-label">Question ' + (i+1) + ' of ' + WEEKLY_QUESTIONS.length + '</p><h3 class="reset-q-text">' + q.text + '</h3><p style="font-size:13px;color:var(--muted);margin-bottom:10px;">' + q.hint + '</p><textarea class="reset-input" id="reset-' + q.id + '" placeholder="' + q.placeholder + '" rows="3"></textarea>';
+    container.appendChild(div);
+  });
+}
+async function submitWeeklyReset() {
+  const resetAnswers = {};
+  WEEKLY_QUESTIONS.forEach(q => {
+    const el = document.getElementById('reset-' + q.id);
+    if (el) resetAnswers[q.id] = el.value.trim();
+  });
+  weeklyResets.push({ date: new Date().toISOString(), answers: resetAnswers });
+  save();
+  showToast('Weekly reset saved ✦');
+  showScreen('dashboard');
+  renderDashboard();
+}
+
+// ═══════════════════════════════════
+// RETROSPECTIVE
+// ═══════════════════════════════════
+async function startRetrospective() {
+  const project = projects.find(p => p.id === activeProjectId);
+  if (!project) return;
+  showScreen('retro');
+  document.getElementById('retro-title').textContent = project.name + '.';
+  const body = document.getElementById('retro-body');
+  body.innerHTML = '<div class="loading-state"><div class="thinking-dots"><span></span><span></span><span></span></div><p class="loading-text">Building your retrospective…</p></div>';
+  try {
+    const data = await API.generateRetro({ project: { name: project.name, vision: project.vision, answers: project.answers, milestones: project.milestones, weeklyResets }, tone: settings.tone });
+    body.innerHTML =
+      '<div class="vision-block"><p class="vision-block-label">What you built</p><p class="vision-block-text">' + (data.built||'—') + '</p></div>' +
+      '<div class="vision-block"><p class="vision-block-label">What you learned</p><p class="vision-block-text">' + (data.learned||'—') + '</p></div>' +
+      '<div class="vision-block"><p class="vision-block-label">What surprised you</p><p class="vision-block-text">' + (data.surprised||'—') + '</p></div>' +
+      '<div class="vision-block"><p class="vision-block-label">What comes next</p><p class="vision-block-text">' + (data.next||'—') + '</p></div>' +
+      '<div class="rule-divider"></div>' +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap;padding:16px 0">' +
+        '<button class="btn-primary" onclick="startSession(true)">Start next 90 days →</button>' +
+        '<button class="btn-ghost" onclick="showScreen(\'dashboard\');renderDashboard()">Back to dashboard</button>' +
+      '</div>' +
+      '<p style="font-size:11px;color:var(--muted);margin-top:8px;">AI-generated retrospective based on your 90-day journey.</p>';
+  } catch(err) {
+    body.innerHTML = '<p style="font-size:14px;color:var(--muted);font-style:italic;padding:16px 0;">Something did not connect. Your work is still saved — please try again.</p><button class="btn-ghost" onclick="startRetrospective()">Try again</button>';
+  }
+}
+
+// ═══════════════════════════════════
+// NEW THOUGHT
+// ═══════════════════════════════════
+function openNewThought() {
+  document.getElementById('new-thought-input').value = '';
+  document.getElementById('new-thought-verdict').style.display = 'none';
+  document.getElementById('new-thought-verdict').innerHTML = '';
+  document.getElementById('new-thought-actions').innerHTML = '<button class="btn-ghost" onclick="closeNewThought()">Cancel</button><button class="btn-primary" onclick="evaluateNewThought()">Check this →</button>';
+  document.getElementById('modal-new-thought').classList.add('active');
+}
+function closeNewThought() { document.getElementById('modal-new-thought').classList.remove('active'); }
+async function evaluateNewThought() {
+  const thought = document.getElementById('new-thought-input').value.trim();
+  if (!thought) return;
+  const verdict = document.getElementById('new-thought-verdict');
+  verdict.style.display = 'block';
+  verdict.innerHTML = '<div class="loading-state" style="min-height:80px"><div class="thinking-dots"><span></span><span></span><span></span></div></div>';
+  document.getElementById('new-thought-actions').innerHTML = '';
+  const project = projects.find(p => p.id === activeProjectId);
+  try {
+    const result = await API.generateNewThought({ thought, project: project ? { name: project.name, vision: project.vision } : null, tone: settings.tone });
+    const typeMap = {
+      integrate: { cls: 'verdict-integrate', icon: '🟢', label: 'Integrate it' },
+      backburner: { cls: 'verdict-backburner', icon: '🟡', label: 'Backburner it' },
+      examine: { cls: 'verdict-examine', icon: '🔴', label: 'Examine this' }
+    };
+    const t = typeMap[result.verdict] || typeMap.examine;
+    verdict.innerHTML = '<div class="verdict-box ' + t.cls + '"><div class="verdict-icon">' + t.icon + '</div><div class="verdict-label">' + t.label + '</div><p class="verdict-text">' + result.reasoning + '</p></div>' + (result.suggestion ? '<p style="font-size:13px;color:var(--muted);line-height:1.5;">' + result.suggestion + '</p>' : '');
+    let actionHTML = '<button class="btn-ghost" onclick="closeNewThought()">Close</button>';
+    if (result.verdict === 'backburner') {
+      actionHTML += '<button class="btn-primary" onclick="addToSomeday()">Add to Someday →</button>';
+    } else {
+      actionHTML += '<button class="btn-primary" onclick="closeNewThought()">Got it, noted →</button>';
+    }
+    document.getElementById('new-thought-actions').innerHTML = actionHTML;
+  } catch(err) {
+    verdict.innerHTML = '<p style="font-size:13px;color:var(--muted);font-style:italic;">Something did not connect. Your work is still saved — please try again.</p>';
+    document.getElementById('new-thought-actions').innerHTML = '<button class="btn-ghost" onclick="closeNewThought()">Close</button><button class="btn-primary" onclick="evaluateNewThought()">Retry</button>';
+  }
+}
+function addToSomeday(thought) {
+  const text = thought || document.getElementById('new-thought-input').value.trim();
+  if (!text) return;
+  somedayItems.push({ text, date: new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}), id: Date.now() });
+  save();
+  closeNewThought();
+  showToast('Added to Someday/Maybe \u2726');
+  if (document.getElementById('screen-dashboard').classList.contains('active')) renderDashboard();
+}
+
+
+// ═══════════════════════════════════
+// EMAIL CAPTURE
+// ═══════════════════════════════════
+function openEmailCapture() {
+  document.getElementById('email-capture-input').value = userEmail || '';
+  document.getElementById('email-capture-message').style.display = 'none';
+  document.getElementById('email-capture-actions').innerHTML = '<button class="btn-ghost" onclick="skipEmailCapture()">Skip for now</button><button class="btn-primary" onclick="submitEmailCapture()">Send my vision →</button>';
+  document.getElementById('modal-email-capture').classList.add('active');
+}
+
+function closeEmailCapture() {
+  document.getElementById('modal-email-capture').classList.remove('active');
+  if (!inTrial) {
+    setTimeout(() => showPaywall(), 200);
+  }
+}
+
+function skipEmailCapture() {
+  document.getElementById('modal-email-capture').classList.remove('active');
+  if (pendingPaywall) { pendingPaywall = false; showScreen('paywall'); }
+}
+
+async function submitEmailCapture() {
+  const email = document.getElementById('email-capture-input').value.trim();
+  if (!email || !email.includes('@')) {
+    const msg = document.getElementById('email-capture-message');
+    msg.style.color = 'var(--danger)';
+    msg.textContent = 'Please enter a valid email address.';
+    msg.style.display = 'block';
+    return;
+  }
+  document.getElementById('email-capture-actions').innerHTML = '<div class="thinking-dots" style="justify-content:flex-end"><span></span><span></span><span></span></div>';
+  const project = projects.find(p => p.id === activeProjectId);
+  try {
+    await API.captureEmail({
+      email,
+      vision: currentVision || (project && project.vision) || null,
+      answers: (project && project.answers) || answers,
+      projectName: (project && project.name) || answers['q-name'] || null
+    });
+    userEmail = email;
+    localStorage.setItem('cw-email', email);
+    save();
+    const msg = document.getElementById('email-capture-message');
+    msg.style.color = 'var(--success)';
+    msg.textContent = 'Vision sent! Check your inbox.';
+    msg.style.display = 'block';
+    if (pendingPaywall) {
+      document.getElementById('email-capture-actions').innerHTML = '<button class="btn-primary" onclick="skipEmailCapture()">Continue to subscribe →</button>';
+    } else {
+      document.getElementById('email-capture-actions').innerHTML = '<button class="btn-primary" onclick="closeEmailCapture()">Done →</button>';
+    }
+  } catch(err) {
+    const msg = document.getElementById('email-capture-message');
+    msg.style.color = 'var(--danger)';
+    msg.textContent = 'Something went wrong. Try again.';
+    msg.style.display = 'block';
+    document.getElementById('email-capture-actions').innerHTML = '<button class="btn-ghost" onclick="skipEmailCapture()">Skip for now</button><button class="btn-primary" onclick="submitEmailCapture()">Try again →</button>';
+  }
+}
+
+// ═══════════════════════════════════
+// RESTORE SESSION
+// ═══════════════════════════════════
+function openRestoreSession() {
+  document.getElementById('restore-email-input').value = '';
+  document.getElementById('restore-message').style.display = 'none';
+  document.getElementById('modal-restore-session').classList.add('active');
+}
+function closeRestoreSession() {
+  document.getElementById('modal-restore-session').classList.remove('active');
+}
+async function submitRestoreSession() {
+  const email = document.getElementById('restore-email-input').value.trim();
+  if (!email || !email.includes('@')) {
+    const msg = document.getElementById('restore-message');
+    msg.textContent = 'Please enter a valid email address.';
+    msg.style.display = 'block';
+    return;
+  }
+  try {
+    let data;
+    try { data = await API.restoreSession({ email }); } catch(e) {
+      const msg = document.getElementById('restore-message');
+      msg.textContent = 'No account found for this email.';
+      msg.style.display = 'block';
+      return;
+    }
+    if (false) {
+      const msg = document.getElementById('restore-message');
+      msg.textContent = 'No account found for this email.';
+      msg.style.display = 'block';
+      return;
+    }
+    userEmail = email;
+    localStorage.setItem('cw-email', email);
+    inTrial = data.subscribed;
+    save();
+    closeRestoreSession();
+    if (data.subscribed) {
+      showToast('Welcome back!');
+      showScreen('dashboard');
+      renderDashboard();
+    } else {
+      showToast('Session found. Subscribe to access your runway.');
+      showScreen('splash');
+    }
+  } catch(err) {
+    const msg = document.getElementById('restore-message');
+    msg.textContent = 'Something went wrong. Try again.';
+    msg.style.display = 'block';
+  }
+}
+
+async function cloudSave() {
+  if (!userEmail) return;
+  try {
+    await API.saveProject({ email: userEmail, projects, somedayItems, weeklyResets });
+  } catch(e) {}
+}
+
+// ═══════════════════════════════════
+// VISION BOARD
+// ═══════════════════════════════════
+let vbCards = JSON.parse(localStorage.getItem('cw-vboard') || '[]');
+let vbCardType = 'text';
+let vbCardSize = 'md';
+let vbBlockSize = 'md';
+let vbCardBg = 'var(--paper)';
+let vbDragging = null;
+let vbDragOffX = 0, vbDragOffY = 0;
+const VB_SIZES = { sm: {w:120,h:80}, md: {w:180,h:120}, lg: {w:260,h:160} };
+const VB_BLOCK_SIZES = { sm: {w:80,h:80}, md: {w:140,h:140}, lg: {w:200,h:200} };
+const GRID = 24;
+function snap(val) { return Math.round(val / GRID) * GRID; }
+function saveVB() { localStorage.setItem('cw-vboard', JSON.stringify(vbCards)); }
+function isDarkColor(color) {
+  if (!color || color.includes('var(') || color === 'transparent') return false;
+  const c = color.replace('#','');
+  if (c.length !== 6) return false;
+  const r = parseInt(c.substr(0,2),16), g = parseInt(c.substr(2,2),16), b = parseInt(c.substr(4,2),16);
+  return (0.299*r + 0.587*g + 0.114*b) / 255 < 0.5;
+}
+function getTextColor(bg) { return isDarkColor(bg) ? '#FAFAF7' : 'var(--ink)'; }
+function openVisionBoard() { showScreen('visionboard'); renderVisionBoard(); }
+function renderVisionBoard() {
+  const container = document.getElementById('vb-cards');
+  const empty = document.getElementById('vb-empty');
+  if (!container) return;
+  container.innerHTML = '';
+  if (vbCards.length === 0) { empty.style.display = 'flex'; return; }
+  empty.style.display = 'none';
+  vbCards.forEach((card, idx) => { container.appendChild(createCardEl(card, idx)); });
+  initDrag();
+}
+function createCardEl(card, idx) {
+  const el = document.createElement('div');
+  el.className = 'vb-card';
+  el.dataset.idx = idx;
+  el.style.left = (card.x || 24) + 'px';
+  el.style.top = (card.y || 24) + 'px';
+  el.style.width = (card.w || 180) + 'px';
+  el.style.height = (card.h || 120) + 'px';
+  el.style.background = card.bg || 'var(--paper)';
+  const del = document.createElement('button');
+  del.className = 'vb-card-delete';
+  del.innerHTML = '&#10005;';
+  del.addEventListener('mousedown', e => { e.stopPropagation(); e.preventDefault(); deleteVBCard(idx); });
+  del.addEventListener('touchstart', e => { e.stopPropagation(); e.preventDefault(); deleteVBCard(idx); }, {passive:false});
+  el.appendChild(del);
+  if (card.type === 'text') {
+    const txt = document.createElement('div');
+    txt.className = 'vb-card-text';
+    txt.style.fontSize = card.size === 'lg' ? '22px' : card.size === 'md' ? '17px' : '14px';
+    txt.style.color = getTextColor(card.bg);
+    txt.textContent = card.content;
+    el.appendChild(txt);
+  } else if (card.type === 'quote') {
+    const wrap = document.createElement('div');
+    wrap.className = 'vb-card-quote';
+    wrap.style.color = getTextColor(card.bg);
+    wrap.innerHTML = '<p style="margin:0;">' + card.content + '</p>' + (card.author ? '<p class="vb-card-author">' + card.author + '</p>' : '');
+    el.appendChild(wrap);
+  } else if (card.type === 'color') {
+    el.style.background = card.content;
+  } else if (card.type === 'image') {
+    const img = document.createElement('img');
+    img.className = 'vb-card-image';
+    img.src = card.content;
+    img.alt = '';
+    img.style.pointerEvents = 'none';
+    img.onerror = () => {
+      img.style.display = 'none';
+      const errDiv = document.createElement('div');
+      errDiv.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px;padding:12px;text-align:center;';
+      const errText = document.createElement('p');
+      errText.style.cssText = 'font-size:12px;color:var(--muted);';
+      errText.textContent = 'Image not found';
+      const errBtn = document.createElement('button');
+      errBtn.style.cssText = 'font-size:11px;background:var(--danger);color:white;border:none;border-radius:2px;padding:4px 10px;cursor:pointer;';
+      errBtn.textContent = 'Remove';
+      errBtn.addEventListener('mousedown', e => { e.stopPropagation(); deleteVBCard(idx); });
+      errDiv.appendChild(errText);
+      errDiv.appendChild(errBtn);
+      el.appendChild(errDiv);
+    };
+    el.appendChild(img);
+  } else if (card.type === 'emoji') {
+    const em = document.createElement('div');
+    em.className = 'vb-card-emoji';
+    em.textContent = card.content;
+    el.appendChild(em);
+  }
+  return el;
+}
+function initDrag() {
+  document.getElementById('vb-cards').querySelectorAll('.vb-card').forEach(card => {
+    card.addEventListener('mousedown', startDrag);
+    card.addEventListener('touchstart', startDragTouch, {passive:false});
+  });
+}
+function startDrag(e) {
+  if (e.target.classList.contains('vb-card-delete')) return;
+  e.preventDefault();
+  vbDragging = e.currentTarget;
+  vbDragOffX = e.clientX - vbDragging.offsetLeft;
+  vbDragOffY = e.clientY - vbDragging.offsetTop;
+  vbDragging.classList.add('dragging');
+  document.addEventListener('mousemove', doDrag);
+  document.addEventListener('mouseup', stopDrag);
+}
+function startDragTouch(e) {
+  if (e.target.classList.contains('vb-card-delete')) return;
+  e.preventDefault();
+  const touch = e.touches[0];
+  vbDragging = e.currentTarget;
+  vbDragOffX = touch.clientX - vbDragging.offsetLeft;
+  vbDragOffY = touch.clientY - vbDragging.offsetTop;
+  vbDragging.classList.add('dragging');
+  document.addEventListener('touchmove', doDragTouch, {passive:false});
+  document.addEventListener('touchend', stopDragTouch);
+}
+function doDrag(e) {
+  if (!vbDragging) return;
+  vbDragging.style.left = Math.max(0, snap(e.clientX - vbDragOffX)) + 'px';
+  vbDragging.style.top = Math.max(0, snap(e.clientY - vbDragOffY)) + 'px';
+}
+function doDragTouch(e) {
+  if (!vbDragging) return;
+  e.preventDefault();
+  const touch = e.touches[0];
+  vbDragging.style.left = Math.max(0, snap(touch.clientX - vbDragOffX)) + 'px';
+  vbDragging.style.top = Math.max(0, snap(touch.clientY - vbDragOffY)) + 'px';
+}
+function stopDrag() {
+  if (!vbDragging) return;
+  vbCards[parseInt(vbDragging.dataset.idx)].x = parseInt(vbDragging.style.left);
+  vbCards[parseInt(vbDragging.dataset.idx)].y = parseInt(vbDragging.style.top);
+  vbDragging.classList.remove('dragging');
+  vbDragging = null;
+  saveVB();
+  document.removeEventListener('mousemove', doDrag);
+  document.removeEventListener('mouseup', stopDrag);
+}
+function stopDragTouch() {
+  if (!vbDragging) return;
+  vbCards[parseInt(vbDragging.dataset.idx)].x = parseInt(vbDragging.style.left);
+  vbCards[parseInt(vbDragging.dataset.idx)].y = parseInt(vbDragging.style.top);
+  vbDragging.classList.remove('dragging');
+  vbDragging = null;
+  saveVB();
+  document.removeEventListener('touchmove', doDragTouch);
+  document.removeEventListener('touchend', stopDragTouch);
+}
+function deleteVBCard(idx) {
+  vbCards.splice(idx, 1);
+  saveVB();
+  renderVisionBoard();
+  showToast('Card removed');
+}
+function openAddCard() {
+  vbCardType = 'text'; vbCardSize = 'md'; vbBlockSize = 'md'; vbCardBg = 'var(--paper)';
+  document.querySelectorAll('[id^="card-type-"]').forEach(b => b.classList.remove('active'));
+  document.getElementById('card-type-text').classList.add('active');
+  document.getElementById('size-md').classList.add('active');
+  document.getElementById('block-md').classList.add('active');
+  ['text','quote','color','image','emoji'].forEach(t => {
+    document.getElementById('card-form-' + t).style.display = t === 'text' ? 'block' : 'none';
+  });
+  ['card-text-input','card-quote-input','card-quote-author','card-image-input','card-emoji-input'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('modal-add-card').classList.add('active');
+}
+function closeAddCard() { document.getElementById('modal-add-card').classList.remove('active'); }
+function setCardType(type) {
+  vbCardType = type;
+  document.querySelectorAll('[id^="card-type-"]').forEach(b => b.classList.remove('active'));
+  document.getElementById('card-type-' + type).classList.add('active');
+  ['text','quote','color','image','emoji'].forEach(t => {
+    document.getElementById('card-form-' + t).style.display = t === type ? 'block' : 'none';
+  });
+}
+function setCardSize(size) {
+  vbCardSize = size;
+  document.querySelectorAll('#card-size-options .tone-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('size-' + size).classList.add('active');
+}
+function setBlockSize(size) {
+  vbBlockSize = size;
+  document.querySelectorAll('[id^="block-"]').forEach(b => b.classList.remove('active'));
+  document.getElementById('block-' + size).classList.add('active');
+}
+function setCardBg(bg) {
+  vbCardBg = bg;
+  document.querySelectorAll('#card-color-swatches .color-swatch').forEach(s => s.classList.remove('active'));
+  const match = document.querySelector('#card-color-swatches [data-bg="' + bg + '"]');
+  if (match) match.classList.add('active');
+}
+function addCardToBoard() {
+  const offset = vbCards.length * GRID;
+  let card = { type: vbCardType, x: snap(24 + offset % 240), y: snap(24 + Math.floor(offset/240) * GRID * 7), bg: vbCardBg };
+  if (vbCardType === 'text') {
+    const val = document.getElementById('card-text-input').value.trim();
+    if (!val) return;
+    const s = VB_SIZES[vbCardSize];
+    card.content = val; card.size = vbCardSize; card.w = s.w; card.h = s.h;
+  } else if (vbCardType === 'quote') {
+    const val = document.getElementById('card-quote-input').value.trim();
+    if (!val) return;
+    card.content = val; card.author = document.getElementById('card-quote-author').value.trim();
+    card.w = 240; card.h = 160;
+  } else if (vbCardType === 'color') {
+    const color = document.getElementById('card-color-input').value;
+    const s = VB_BLOCK_SIZES[vbBlockSize];
+    card.content = color; card.bg = color; card.w = s.w; card.h = s.h;
+  } else if (vbCardType === 'image') {
+    const val = document.getElementById('card-image-input').value.trim();
+    if (!val) return;
+    const errEl = document.getElementById('card-image-error');
+    errEl.style.display = 'none';
+    const testImg = new Image();
+    testImg.onload = () => {
+      card.content = val; card.w = 200; card.h = 200;
+      vbCards.push(card); saveVB(); closeAddCard(); renderVisionBoard();
+    };
+    testImg.onerror = () => { errEl.style.display = 'block'; };
+    testImg.src = val;
+    return;
+  } else if (vbCardType === 'emoji') {
+    const val = document.getElementById('card-emoji-input').value.trim();
+    if (!val) return;
+    card.content = val; card.w = 100; card.h = 100; card.bg = 'transparent';
+  }
+  vbCards.push(card); saveVB(); closeAddCard(); renderVisionBoard();
+}
+// ═══════════════════════════════════
+// UTILS
+// ═══════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ═══════════════════════════════════
+// PWA
+// ═══════════════════════════════════
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; const btn = document.getElementById('install-btn'); if (btn) btn.style.display = 'flex'; });
+window.addEventListener('appinstalled', () => { deferredPrompt = null; });
+async function installApp() { if (!deferredPrompt) return; deferredPrompt.prompt(); deferredPrompt = null; }
+if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('clearwork-sw.js').catch(()=>{})); }
+
+// ═══════════════════════════════════
+// INIT
+// ═══════════════════════════════════
+load();
+applySettings();
+const _urlParams = new URLSearchParams(window.location.search);
+if (inTrial) {
+  showScreen('dashboard');
+  renderDashboard();
+} else if (_urlParams.get('action') === 'subscribe') {
+  if (projects.length > 0 || Object.keys(answers).length > 0) {
+    activateAccess();
+  } else {
+    showScreen('splash');
+  }
+}
+</script>
+</body>
+</html>

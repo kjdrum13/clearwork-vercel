@@ -1,0 +1,17 @@
+{
+  "name": "clearwork",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static build — no compile step required'",
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.20.9",
+    "resend": "^3.2.0"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}

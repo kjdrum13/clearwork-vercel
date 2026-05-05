@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You're in — Clearwork</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #0D0D0B;
+    --cream: #F5F2EC;
+    --paper: #FAFAF7;
+    --rule: #E0DDD6;
+    --muted: #8A8780;
+    --accent: #C4A882;
+    --success: #4A7C59;
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+  html, body {
+    height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    text-align: center;
+  }
+  .logo {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 48px;
+    color: var(--ink);
+  }
+  .logo span { font-style: italic; font-weight: 400; color: var(--muted); }
+  .check {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 22px;
+  }
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(32px, 6vw, 48px);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .sub {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 360px;
+    line-height: 1.6;
+    margin: 0 auto 40px;
+  }
+  .steps {
+    text-align: left;
+    max-width: 360px;
+    width: 100%;
+    margin: 0 auto 40px;
+    border-top: 1px solid var(--rule);
+  }
+  .step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .step-num {
+    font-family: var(--serif);
+    font-size: 13px;
+    color: var(--accent);
+    min-width: 24px;
+    padding-top: 1px;
+  }
+  .step-text {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .step-hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: none;
+    border-radius: 2px;
+    padding: 14px 32px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    transition: opacity 0.2s;
+    margin-bottom: 20px;
+  }
+  .btn:hover { opacity: 0.85; }
+  .trial-note {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    max-width: 320px;
+  }
+  .footer {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.8;
+    border-top: 1px solid var(--rule);
+    padding-top: 24px;
+    max-width: 360px;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .footer a {
+    color: var(--muted);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="logo">Clear<span>work</span></div>
+
+  <div class="check">✦</div>
+  <p class="eyebrow">Payment confirmed</p>
+  <h1>You're in.</h1>
+  <p class="sub">Your 7-day free trial has started. No charge until it ends — cancel anytime.</p>
+
+  <div class="steps">
+    <div class="step">
+      <span class="step-num">01</span>
+      <div>
+        <p class="step-text">Go back to Clearwork</p>
+        <p class="step-hint">Click the button below to return to the app.</p>
+      </div>
+    </div>
+    <div class="step">
+      <span class="step-num">02</span>
+      <div>
+        <p class="step-text">Click "I've completed payment"</p>
+        <p class="step-hint">This activates your full access on the paywall screen.</p>
+      </div>
+    </div>
+    <div class="step">
+      <span class="step-num">03</span>
+      <div>
+        <p class="step-text">Build your 90-day runway</p>
+        <p class="step-hint">Your vision session is waiting. Pick up where you left off.</p>
+      </div>
+    </div>
+  </div>
+
+  <a class="btn" href="https://getclearwork.app/app?action=subscribe">
+    Back to Clearwork →
+  </a>
+
+  <p class="trial-note">A receipt has been sent to your email. Manage or cancel your subscription anytime from your <a href="https://app.lemonsqueezy.com/my-orders" style="color:var(--muted);text-decoration:underline;text-underline-offset:3px;">customer portal</a>.</p>
+
+  <div class="footer">
+    Questions? <a href="mailto:hello@getclearwork.app">hello@getclearwork.app</a><br>
+    Clearwork is a product of Oddly Useful Co.
+  </div>
+</div>
+</body>
+</html>
