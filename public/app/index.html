@@ -300,27 +300,6 @@
     .vision-header { padding-left: 16px; padding-right: 16px; }
     .price-row { flex-direction: column; }
   }
-
-  /* ── UPGRADE GATE ── */
-  .upgrade-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.45);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 9000; padding: 24px;
-  }
-  .upgrade-overlay.hidden { display: none; }
-  .upgrade-card {
-    background: var(--paper); border: 1px solid var(--rule);
-    border-radius: 12px; padding: 36px 32px; max-width: 400px;
-    width: 100%; text-align: center;
-  }
-  .upgrade-icon { font-size: 28px; margin-bottom: 16px; }
-  .upgrade-title { font-family: var(--user-font); font-size: 22px; font-weight: 400; margin-bottom: 10px; color: var(--ink); }
-  .upgrade-sub { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; }
-  .upgrade-actions { display: flex; flex-direction: column; gap: 10px; }
-  .upgrade-actions .btn-primary { justify-content: center; }
-  .upgrade-dismiss { font-size: 13px; color: var(--muted); background: none; border: none; cursor: pointer; padding: 8px; }
-  .upgrade-dismiss:hover { color: var(--ink); }
-
 </style>
 </head>
 <body>
@@ -407,7 +386,7 @@
         <div class="paywall-feature">AI-generated 90-day roadmap from your vision</div>
         <div class="paywall-feature">Weekly actions — just this week, nothing more</div>
         <div class="paywall-feature">Milestone sub-tasks you control</div>
-        <div class="paywall-feature">New Thought checker — pivot, backburner, or stay the course</div>
+        <div class="paywall-feature">Focus Filter — evaluate tasks and ideas against your active priorities</div>
         <div class="paywall-feature">Weekly Reset — 5 minutes to stay on track</div>
         <div class="paywall-feature">Phase reviews that adapt your plan as you learn</div>
         <div class="paywall-feature">90-day retrospective when you finish</div>
@@ -479,7 +458,7 @@
     <div class="reset-container">
       <div class="reset-header">
         <h2 class="reset-title">Weekly reset.</h2>
-        <p class="reset-sub">5 minutes. Honest answers. Then get on with it.</p>
+        <p class="reset-sub">Review last week. Define this week. Set priorities.</p>
       </div>
       <div id="reset-questions"></div>
       <div style="display:flex;gap:10px;margin-top:8px;">
@@ -674,9 +653,14 @@
 <!-- NEW THOUGHT MODAL -->
 <div class="modal-overlay" id="modal-new-thought">
   <div class="modal">
-    <h3 class="modal-title">New thought.</h3>
-    <p class="modal-sub">Tell me what's surfaced. Don't edit it — just say it.</p>
-    <textarea class="modal-input" id="new-thought-input" rows="4" placeholder="I've been thinking about…"></textarea>
+    <h3 class="modal-title">Focus filter.</h3>
+    <p class="modal-sub">Enter a thought, task, or idea. Answer the prompts below.</p>
+    <textarea class="modal-input" id="new-thought-input" rows="3" placeholder="Enter a task, idea, or thought…"></textarea>
+    <div id="focus-prompts" style="display:none;margin:12px 0;padding:12px;background:var(--cream);border-radius:6px;border:1px solid var(--rule);">
+      <div style="margin-bottom:10px;"><p style="font-size:12px;font-weight:600;color:var(--ink);margin-bottom:4px;">Is this required right now?</p><textarea class="reset-input" id="fp-required" rows="1" placeholder="Yes / No — and why…" style="min-height:36px;font-size:13px;"></textarea></div>
+      <div style="margin-bottom:10px;"><p style="font-size:12px;font-weight:600;color:var(--ink);margin-bottom:4px;">What is the actual priority?</p><textarea class="reset-input" id="fp-priority" rows="1" placeholder="High / Medium / Low — relative to active work…" style="min-height:36px;font-size:13px;"></textarea></div>
+      <div><p style="font-size:12px;font-weight:600;color:var(--ink);margin-bottom:4px;">What can be ignored?</p><textarea class="reset-input" id="fp-ignore" rows="1" placeholder="What parts of this can be dropped or deferred…" style="min-height:36px;font-size:13px;"></textarea></div>
+    </div>
     <div id="new-thought-verdict" style="display:none"></div>
     <div class="modal-actions" id="new-thought-actions">
       <button class="btn-ghost" onclick="closeNewThought()">Cancel</button>
@@ -798,11 +782,13 @@ const TONE_INSTRUCTIONS = {
 };
 
 const WEEKLY_QUESTIONS = [
-  { id:'w-done', text:'What did you actually get done last week?', hint:'Not what you planned — what actually happened.', placeholder:'I finished…' },
-  { id:'w-blocked', text:'What got in the way?', hint:'Be honest. External obstacles or internal ones.', placeholder:'The thing that slowed me was…' },
-  { id:'w-one', text:'What is the one thing this week?', hint:'If you only do one thing, what moves the needle most.', placeholder:'This week I will…' },
-  { id:'w-vision', text:'Is your vision still right, or has something shifted?', hint:'Quick gut check. Still building the same thing?', placeholder:'My vision feels…' },
-  { id:'w-honest', text:'What are you avoiding?', hint:'The thing you know you need to do but keep pushing.', placeholder:'If I\'m honest, I keep avoiding…' }
+  { id:'w-completed', section:'Review last week', text:'What was completed?', hint:'Specific deliverables, decisions, or tasks closed.', placeholder:'Completed…' },
+  { id:'w-slipped', section:'Review last week', text:'What slipped?', hint:'What was planned but not done. No justification needed.', placeholder:'Did not complete…' },
+  { id:'w-forward', section:'Define this week', text:'What must move forward?', hint:'Non-negotiable progress for this week.', placeholder:'Must move forward…' },
+  { id:'w-wait', section:'Define this week', text:'What can wait?', hint:'Tasks or threads that are low-priority this week.', placeholder:'Can defer…' },
+  { id:'w-p1', section:'Set priorities', text:'Priority 1', hint:'', placeholder:'Top priority this week…' },
+  { id:'w-p2', section:'Set priorities', text:'Priority 2', hint:'', placeholder:'Second priority…' },
+  { id:'w-p3', section:'Set priorities', text:'Priority 3', hint:'', placeholder:'Third priority…' }
 ];
 
 // ═══════════════════════════════════
@@ -1246,6 +1232,16 @@ function showRunway(project) {
     html += '<div class="review-banner"><div class="review-banner-title">90 days done.</div><div class="review-banner-sub">You finished your runway. Time to look back at what you built.</div><button class="btn-primary" onclick="startRetrospective()">Start retrospective →</button></div>';
   }
 
+  // 90-day outcome field
+  var savedOutcome = project.outcome || '';
+  html += '<div style="margin-bottom:28px;padding:16px;border:1px solid var(--rule);border-radius:6px;">' +
+    '<p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--user-accent);margin-bottom:8px;">90-day outcome</p>' +
+    '<textarea id="runway-outcome-field" rows="2" placeholder="Define the measurable outcome for this 90-day period…" ' +
+    'style="width:100%;background:transparent;border:none;border-bottom:2px solid var(--rule);padding:8px 0;font-family:var(--sans);font-size:14px;color:var(--ink);outline:none;resize:none;line-height:1.6;" ' +
+    'onblur="saveRunwayOutcome(' + project.id + ',this.value)">' + savedOutcome + '</textarea>' +
+    '<p style="font-size:11px;color:var(--muted);margin-top:6px;">Saved automatically when you leave the field.</p>' +
+  '</div>';
+
   if (r.thisWeek && r.thisWeek.length > 0) {
     html += '<div class="this-week-block"><p class="this-week-label">This week</p><ol class="action-list">';
     r.thisWeek.forEach((action,i) => {
@@ -1315,7 +1311,7 @@ function showRunway(project) {
   });
 
   html += '<div class="runway-actions-row">' +
-    '<button class="btn-ghost" onclick="openNewThought()">✦ New thought</button>' +
+    '<button class="btn-ghost" onclick="openNewThought()">✦ Focus filter</button>' +
     '<button class="btn-ghost" onclick="startWeeklyReset()">Weekly reset</button>' +
     '</div>' +
     '<p style="font-size:11px;color:var(--muted);margin-top:8px;padding-bottom:24px;">AI-generated plan based on your vision session answers.</p>';
@@ -1463,11 +1459,22 @@ function startWeeklyReset() {
   showScreen('weekly-reset');
   const container = document.getElementById('reset-questions');
   container.innerHTML = '';
-  WEEKLY_QUESTIONS.forEach((q, i) => {
-    const div = document.createElement('div');
-    div.className = 'reset-q';
-    div.innerHTML = '<p class="reset-q-label">Question ' + (i+1) + ' of ' + WEEKLY_QUESTIONS.length + '</p><h3 class="reset-q-text">' + q.text + '</h3><p style="font-size:13px;color:var(--muted);margin-bottom:10px;">' + q.hint + '</p><textarea class="reset-input" id="reset-' + q.id + '" placeholder="' + q.placeholder + '" rows="3"></textarea>';
-    container.appendChild(div);
+  const sections = [...new Set(WEEKLY_QUESTIONS.map(q => q.section))];
+  sections.forEach(section => {
+    const secDiv = document.createElement('div');
+    secDiv.style.cssText = 'margin-bottom:32px;';
+    secDiv.innerHTML = '<p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--user-accent);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--rule);">' + section + '</p>';
+    const qs = WEEKLY_QUESTIONS.filter(q => q.section === section);
+    qs.forEach(q => {
+      const div = document.createElement('div');
+      div.className = 'reset-q';
+      div.style.marginBottom = '20px';
+      div.innerHTML = '<h3 class="reset-q-text" style="font-size:15px;margin-bottom:6px;">' + q.text + '</h3>' +
+        (q.hint ? '<p style="font-size:12px;color:var(--muted);margin-bottom:8px;">' + q.hint + '</p>' : '') +
+        '<textarea class="reset-input" id="reset-' + q.id + '" placeholder="' + q.placeholder + '" rows="2"></textarea>';
+      secDiv.appendChild(div);
+    });
+    container.appendChild(secDiv);
   });
 }
 async function submitWeeklyReset() {
@@ -1518,8 +1525,11 @@ function openNewThought() {
   document.getElementById('new-thought-input').value = '';
   document.getElementById('new-thought-verdict').style.display = 'none';
   document.getElementById('new-thought-verdict').innerHTML = '';
-  document.getElementById('new-thought-actions').innerHTML = '<button class="btn-ghost" onclick="closeNewThought()">Cancel</button><button class="btn-primary" onclick="evaluateNewThought()">Check this →</button>';
+  var fp = document.getElementById('focus-prompts');
+  if (fp) { fp.style.display = 'none'; ['fp-required','fp-priority','fp-ignore'].forEach(function(id){ var el = document.getElementById(id); if(el) el.value = ''; }); }
+  document.getElementById('new-thought-actions').innerHTML = '<button class="btn-ghost" onclick="closeNewThought()">Cancel</button><button class="btn-primary" onclick="evaluateNewThought()">Evaluate →</button>';
   document.getElementById('modal-new-thought').classList.add('active');
+  setTimeout(function(){ var inp = document.getElementById('new-thought-input'); if(inp) inp.addEventListener('input', function(){ var fp2 = document.getElementById('focus-prompts'); if(fp2 && inp.value.trim().length > 2) fp2.style.display = 'block'; }); }, 100);
 }
 function closeNewThought() { document.getElementById('modal-new-thought').classList.remove('active'); }
 async function evaluateNewThought() {
@@ -1955,99 +1965,16 @@ if (inTrial) {
   }
 }
 
-
 // ═══════════════════════════════════
-// TIER GATING
+// RUNWAY OUTCOME
 // ═══════════════════════════════════
-
-function cwIsPaid() {
-  return !!localStorage.getItem('clearwork_paid') || !!localStorage.getItem('cw-paid');
+function saveRunwayOutcome(projectId, value) {
+  var p = projects.find(function(x){ return x.id === projectId; });
+  if (!p) return;
+  p.outcome = value.trim();
+  save();
 }
-
-function cwShowUpgrade(title, sub) {
-  document.getElementById('upgrade-title').textContent = title || 'Unlock unlimited access';
-  document.getElementById('upgrade-sub').textContent = sub || 'Upgrade to Clearwork to continue.';
-  document.getElementById('upgrade-gate').classList.remove('hidden');
-}
-
-function cwDismissUpgrade() {
-  document.getElementById('upgrade-gate').classList.add('hidden');
-}
-
-function cwUpgradeRedirect() {
-  window.location.href = '/';
-}
-
-// ── Gate: new project (free = 1 active project max) ──────────────
-const _origStartSession = startSession;
-window.startSession = function(fresh) {
-  if (!cwIsPaid() && fresh) {
-    const active = projects.filter(p => p.status === 'active');
-    if (active.length >= 1) {
-      cwShowUpgrade(
-        'One project at a time',
-        'Free users can have one active project. Upgrade to run unlimited projects at once.'
-      );
-      return;
-    }
-  }
-  _origStartSession(fresh);
-};
-
-// ── Gate: new thought checker (paid only) ────────────────────────
-const _origOpenNewThought = openNewThought;
-window.openNewThought = function() {
-  if (!cwIsPaid()) {
-    cwShowUpgrade(
-      'New Thought checker',
-      'Evaluate new ideas against your active project. Available on paid plans.'
-    );
-    return;
-  }
-  _origOpenNewThought();
-};
-
-// ── Gate: weekly reset (free = 1 per week) ───────────────────────
-const _origStartWeeklyReset = startWeeklyReset;
-window.startWeeklyReset = function() {
-  if (!cwIsPaid()) {
-    const lastReset = weeklyResets[weeklyResets.length - 1];
-    const daysSince = lastReset
-      ? Math.floor((Date.now() - new Date(lastReset.date).getTime()) / 86400000)
-      : 999;
-    if (daysSince < 6) {
-      cwShowUpgrade(
-        'Weekly reset',
-        'Free users can reset once per week. Upgrade for unlimited weekly resets and full history.'
-      );
-      return;
-    }
-  }
-  _origStartWeeklyReset();
-};
-
-// ── Mark paid when activateAccess is called ───────────────────────
-const _origActivateAccess = activateAccess;
-window.activateAccess = function() {
-  localStorage.setItem('clearwork_paid', '1');
-  _origActivateAccess();
-};
-
 
 </script>
-
-<!-- UPGRADE GATE MODAL -->
-<div class="upgrade-overlay hidden" id="upgrade-gate">
-  <div class="upgrade-card">
-    <div class="upgrade-icon">✦</div>
-    <h2 class="upgrade-title" id="upgrade-title">Unlock unlimited access</h2>
-    <p class="upgrade-sub" id="upgrade-sub">Upgrade to Clearwork to continue.</p>
-    <div class="upgrade-actions">
-      <button class="btn-primary" onclick="cwUpgradeRedirect()">See plans →</button>
-      <button class="upgrade-dismiss" onclick="cwDismissUpgrade()">Not right now</button>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
