@@ -1448,7 +1448,10 @@ async function submitPhaseReview() {
   try {
     const data = await API.generatePhaseReview({ learning, project: project ? { name: project.name, vision: project.vision, phaseNum: phaseReviewPhaseIndex + 1 } : null, tone: settings.tone });
     result.innerHTML = '<div class="review-banner"><div class="review-banner-title">' + (data.title || 'Noted.') + '</div><p style="font-size:14px;color:var(--muted);line-height:1.5;">' + (data.insight || '') + '</p></div>';
-    document.getElementById('phase-review-actions').innerHTML = '<button class="btn-primary" onclick="closePhaseReview();showRunway(projects.find(p=>p.id===activeProjectId))">Continue to Phase ' + (phaseReviewPhaseIndex + 2) + ' →</button>';
+    const nextPhaseNum = phaseReviewPhaseIndex + 2;
+    const isLastPhase = nextPhaseNum > 3;
+    const nextLabel = isLastPhase ? 'Complete your runway →' : 'Continue to Phase ' + nextPhaseNum + ' →';
+    document.getElementById('phase-review-actions').innerHTML = '<button class="btn-primary" onclick="closePhaseReview();showRunway(projects.find(p=>p.id===activeProjectId))">' + nextLabel + '</button>';
   } catch(err) {
     result.style.display = 'block';
     result.innerHTML = '<p style="font-size:13px;color:var(--muted);padding:8px 0;">Something did not connect. Your work is still saved — please try again.</p>';
