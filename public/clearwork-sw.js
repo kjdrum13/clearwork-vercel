@@ -1,4 +1,4 @@
-const CACHE = 'clearwork-v34';
+const CACHE = 'clearwork-v99';
 const ASSETS = [
   '/app.html',
   '/clearwork-manifest.json'
