@@ -27,7 +27,7 @@ Return ONLY valid JSON, no markdown, no preamble:
         {"id": "m2", "text": "Specific milestone 2", "week": 2, "phase": 1},
         {"id": "m3", "text": "Specific milestone 3", "week": 3, "phase": 1}
       ],
-      "weeklyFocus": "What to focus on most days in this phase"
+      "focus": "What to focus on most days in this phase"
     },
     {
       "title": "Phase 2 name",
@@ -38,7 +38,7 @@ Return ONLY valid JSON, no markdown, no preamble:
         {"id": "m5", "text": "Specific milestone 5", "week": 6, "phase": 2},
         {"id": "m6", "text": "Specific milestone 6", "week": 7, "phase": 2}
       ],
-      "weeklyFocus": "What to focus on most days in this phase"
+      "focus": "What to focus on most days in this phase"
     },
     {
       "title": "Phase 3 name",
@@ -49,7 +49,7 @@ Return ONLY valid JSON, no markdown, no preamble:
         {"id": "m8", "text": "Specific milestone 8", "week": 10, "phase": 3},
         {"id": "m9", "text": "Specific milestone 9", "week": 11, "phase": 3}
       ],
-      "weeklyFocus": "What to focus on most days in this phase"
+      "focus": "What to focus on most days in this phase"
     }
   ]
 }`;
