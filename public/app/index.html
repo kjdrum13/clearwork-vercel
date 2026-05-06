@@ -719,7 +719,7 @@
 // API SERVICE LAYER
 // ═══════════════════════════════════
 const API = {
-  base: '/.netlify/functions',
+  base: '/api',
   async call(endpoint, body) {
     const response = await fetch(this.base + '/' + endpoint, {
       method: 'POST',
