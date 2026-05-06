@@ -1229,7 +1229,7 @@ function showRunway(project) {
   '</div>';
 
   html += '<div style="margin-top:16px;padding-top:16px;border-top:0.5px solid var(--border)">' +
-    '<button onclick="askWhatNext()" style="background:none;border:none;padding:0;font-family:var(--user-font);font-size:13px;color:var(--muted);cursor:pointer;letter-spacing:0.02em;">✦ What should I do next?</button>' +
+    '<button onclick="askWhatNext()" style="background:none;border:0.5px solid var(--border);border-radius:6px;padding:8px 16px;font-family:var(--user-font);font-size:13px;color:var(--text);cursor:pointer;letter-spacing:0.02em;">✦ What should I do next?</button>' +
   '</div>';
 
   if (allDone && daysIn >= 85) {
@@ -2034,10 +2034,10 @@ async function askWhatNext() {
 </script>
 
 <!-- What should I do next modal -->
-<div id="next-action-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
-  <div style="background:var(--bg);max-width:480px;width:90%;border-radius:12px;padding:32px;position:relative;">
+<div id="next-action-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;max-width:480px;width:90%;border-radius:12px;padding:32px;position:relative;box-shadow:0 4px 24px rgba(0,0,0,0.15);">
     <p style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin:0 0 16px;">What to do next</p>
-    <div id="next-action-content" style="font-family:var(--user-font);font-size:16px;line-height:1.7;font-style:italic;color:var(--text);min-height:60px;"></div>
+    <div id="next-action-content" style="font-family:var(--user-font);font-size:16px;line-height:1.7;font-style:italic;color:#1a1a1a;min-height:60px;"></div>
     <button onclick="closeNextAction()" style="margin-top:24px;background:none;border:0.5px solid var(--border);padding:8px 20px;border-radius:6px;font-size:13px;cursor:pointer;color:var(--text);">Close</button>
   </div>
 </div>
