@@ -1,6 +1,11 @@
 {
   "version": 2,
   "outputDirectory": "public",
+  "functions": {
+    "api/*.js": {
+      "maxDuration": 60
+    }
+  },
   "rewrites": [
     { "source": "/app", "destination": "/app/index.html" },
     { "source": "/welcome", "destination": "/welcome.html" },
