@@ -1047,11 +1047,7 @@ function renderVisionFallback(a) {
     '<div class="vision-block"><p class="vision-block-label">Why it matters</p><p class="vision-block-text">' + (a['q-why']||'—') + '</p></div>' +
     '<div class="vision-block"><p class="vision-block-label">What success looks like in 90 days</p><p class="vision-block-text">' + (a['q-90days']||'—') + '</p></div>' +
     '<div class="rule-divider"></div><div class="vision-block"><p class="vision-block-label">First 3 actions</p><ol class="action-list" id="out-actions"></ol></div>';
-  const list = document.getElementById('out-actions');
-  [
-    {text: "Write a one-paragraph description of " + (a['q-name']||'your project') + " you could say to a stranger.", tag:'Clarity'},
-    {text: "Find three real people who need what you're building. Talk to them first.", tag:'Research'},
-    {text: "Work backwards from your 90-day goal. What's the one thing to finish this week?", tag:'Focus'}
+    (v.actions||[]).forEach((action,i) => {
   ].forEach((action,i) => {
     const li = document.createElement('li');
     li.className = 'action-item';
