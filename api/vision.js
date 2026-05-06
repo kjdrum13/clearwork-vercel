@@ -8,8 +8,12 @@ export default async function handler(req, res) {
 
   try {
     const { answers, tone } = req.body;
-    if (!answers || !Array.isArray(answers)) {
-      return res.status(400).json({ error: 'answers array required' });
+    if (!answers) {
+      return res.status(400).json({ error: 'answers required' });
+    }
+    // Convert object format to array if needed
+    if (!Array.isArray(answers)) {
+      answers = Object.values(answers).filter(v => v && String(v).trim());
     }
 
     const Anthropic = (await import('@anthropic-ai/sdk')).default;
