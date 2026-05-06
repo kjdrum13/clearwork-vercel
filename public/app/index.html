@@ -1061,6 +1061,23 @@ function renderVisionFallback(a) {
 }
 
 // ═══════════════════════════════════
+// ═══════════════════════════════════
+// DELETE PROJECT
+// ═══════════════════════════════════
+function confirmDeleteProject(projectId) {
+  const project = projects.find(p => p.id == projectId);
+  if (!project) return;
+  if (!confirm('Delete "' + project.name + '"? This cannot be undone.')) return;
+  const index = projects.findIndex(p => p.id == projectId);
+  if (index === -1) return;
+  projects.splice(index, 1);
+  if (activeProjectId == projectId) {
+    activeProjectId = projects.length > 0 ? projects[0].id : null;
+    localStorage.setItem('cw-active-project', activeProjectId || '');
+  }
+  save();
+  renderDashboard();
+}
 // PAYWALL
 // ═══════════════════════════════════
 function showPaywall() {
@@ -1138,6 +1155,13 @@ function renderDashboard() {
           '<span class="dash-card-tag tag-active">Active</span>' +
         '</div>';
       card.onclick = () => { activeProjectId = p.id; showRunway(p); };
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = '×';
+      deleteBtn.title = 'Delete project';
+      deleteBtn.style.cssText = 'background:none;border:none;padding:4px 8px;cursor:pointer;color:var(--muted);font-size:18px;line-height:1;position:absolute;top:12px;right:12px;';
+      deleteBtn.onclick = (event) => { event.stopPropagation(); confirmDeleteProject(p.id); };
+      card.style.position = 'relative';
+      card.appendChild(deleteBtn);
       container.appendChild(card);
     });
   }
