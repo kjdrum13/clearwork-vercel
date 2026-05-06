@@ -1695,7 +1695,9 @@ async function submitRestoreSession() {
 async function cloudSave() {
   if (!userEmail) return;
   try {
-    await API.saveProject({ email: userEmail, projects, somedayItems, weeklyResets });
+    const project_data = { answers, projects, somedayItems, weeklyResets, activeProjectId, settings };
+    const is_paid = !!localStorage.getItem('clearwork_paid') || inTrial;
+    await API.saveProject({ email: userEmail, project_data, is_paid });
   } catch(e) {}
 }
 
