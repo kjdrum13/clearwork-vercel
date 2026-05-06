@@ -1620,7 +1620,7 @@ function openEmailCapture() {
 
 function closeEmailCapture() {
   document.getElementById('modal-email-capture').classList.remove('active');
-  if (!inTrial) {
+  if (!inTrial && projects.length === 0) {
     setTimeout(() => showPaywall(), 200);
   }
 }
