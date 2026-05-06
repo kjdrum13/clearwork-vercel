@@ -3,6 +3,7 @@
   "outputDirectory": "public",
   "rewrites": [
     { "source": "/app", "destination": "/app/index.html" },
+    { "source": "/welcome", "destination": "/welcome.html" },
     { "source": "/adhd-productivity", "destination": "/adhd-productivity/index.html" },
     { "source": "/90-day-plan", "destination": "/90-day-plan/index.html" },
     { "source": "/vision-clarity", "destination": "/vision-clarity/index.html" },
