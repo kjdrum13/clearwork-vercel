@@ -2025,7 +2025,7 @@ async function askWhatNext() {
     });
     contentEl.textContent = result.recommendation || 'No recommendation returned.';
   } catch (err) {
-    contentEl.innerHTML = 'Something didn't connect. Your work is still saved — please try again. <br><br><button onclick="askWhatNext()" style="background:none;border:0.5px solid var(--border);padding:6px 16px;border-radius:6px;font-size:12px;cursor:pointer;">Try again</button>';
+    contentEl.innerHTML = "Something didn't connect. Your work is still saved — please try again. <br><br><button onclick='askWhatNext()' style='background:none;border:0.5px solid var(--border);padding:6px 16px;border-radius:6px;font-size:12px;cursor:pointer;'>Try again</button>";
   }
 }
 </script>
