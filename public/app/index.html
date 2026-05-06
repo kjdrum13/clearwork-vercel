@@ -1982,59 +1982,6 @@ function saveRunwayOutcome(projectId, value) {
 }
 
 
-const _cwOrigSave = save;
-window.save = function () { _cwOrigSave(); cwSyncToCloud(); };
-function cwGetEmail() { return localStorage.getItem('cw-email') || null; }
-let cwSyncTimer = null;
-function cwSyncToCloud() {
-  clearTimeout(cwSyncTimer);
-  cwSyncTimer = setTimeout(async function () {
-    const email = cwGetEmail();
-    if (!email) return;
-    try {
-      const state = localStorage.getItem('clearwork-state');
-      if (!state) return;
-      await fetch('/api/save-project', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, project_data: JSON.parse(state), is_paid: !!localStorage.getItem('clearwork_paid') }) });
-    } catch (e) { console.warn('Cloud sync failed:', e.message); }
-  }, 2000);
-}
-async function cwRestoreFromCloud(email, silent) {
-  try {
-    const res = await fetch('/api/restore-session', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
-    if (!res.ok) return;
-    const data = await res.json();
-    if (!data.found) { if (!silent) showToast('No saved project found.'); return; }
-    localStorage.setItem('clearwork-state', JSON.stringify(data.project_data));
-    if (data.is_paid) localStorage.setItem('clearwork_paid', '1');
-    localStorage.setItem('cw-email', email);
-    load(); renderDashboard(); showToast('Project restored.');
-  } catch (e) { if (!silent) showToast('Could not restore. Try again.'); }
-}
-function cwShowRestorePrompt() {
-  if (document.getElementById('cw-restore-modal')) return;
-  const m = document.createElement('div');
-  m.id = 'cw-restore-modal';
-  m.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:16px 20px;border-radius:10px;font-size:13px;z-index:8000;display:flex;align-items:center;gap:12px;max-width:420px;width:calc(100% - 48px);';
-  m.innerHTML = '<span style="flex:1">Restore a saved project?</span><input id="cw-re" type="email" placeholder="Your email" style="flex:2;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:8px 10px;color:var(--paper);font-size:13px;outline:none;"><button onclick="cwHandleRestore()" style="background:var(--paper);color:var(--ink);border:none;border-radius:6px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;">Restore</button><button onclick="document.getElementById('cw-restore-modal').remove()" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;font-size:18px;">x</button>';
-  document.body.appendChild(m);
-}
-async function cwHandleRestore() {
-  const inp = document.getElementById('cw-re');
-  if (!inp) return;
-  const email = inp.value.trim();
-  if (!email || !email.includes('@')) { showToast('Enter a valid email.'); return; }
-  localStorage.setItem('cw-email', email);
-  document.getElementById('cw-restore-modal').remove();
-  await cwRestoreFromCloud(email, false);
-}
-setTimeout(function () {
-  const s = localStorage.getItem('clearwork-state');
-  const e = cwGetEmail();
-  if (s && e) { cwSyncToCloud(); return; }
-  if (e && !s) { cwRestoreFromCloud(e, true); return; }
-  if (!s && !e) { setTimeout(cwShowRestorePrompt, 1500); }
-}, 500);
-
 </script>
 </body>
 </html>
