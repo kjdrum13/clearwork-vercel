@@ -1228,6 +1228,10 @@ function showRunway(project) {
     '<div class="progress-bar-wrap" style="margin-top:10px"><div class="progress-bar-fill" style="width:' + pct + '%"></div></div>' +
   '</div>';
 
+  html += '<div style="margin-top:16px;padding-top:16px;border-top:0.5px solid var(--border)">' +
+    '<button onclick="askWhatNext()" style="background:none;border:none;padding:0;font-family:var(--user-font);font-size:13px;color:var(--muted);cursor:pointer;letter-spacing:0.02em;">✦ What should I do next?</button>' +
+  '</div>';
+
   if (allDone && daysIn >= 85) {
     html += '<div class="review-banner"><div class="review-banner-title">90 days complete.</div><div class="review-banner-sub">Run the retrospective to review outcomes and define what comes next.</div><button class="btn-primary" onclick="startRetrospective()">Start retrospective →</button></div>';
   }
@@ -1984,6 +1988,55 @@ function saveRunwayOutcome(projectId, value) {
 }
 
 
+
+// ═══════════════════════════════════
+// WHAT SHOULD I DO NEXT
+// ═══════════════════════════════════
+function closeNextAction() {
+  document.getElementById('next-action-modal').style.display = 'none';
+}
+
+async function askWhatNext() {
+  const isPaid = !!localStorage.getItem('clearwork_paid') || inTrial;
+  if (!isPaid) { showPaywall(); return; }
+
+  const project = projects.find(p => p.id === activeProjectId);
+  if (!project || !project.runway) return;
+
+  const completed = (project.milestones || []).filter(m => m.checked).map(m => m.text);
+  const incomplete = (project.milestones || []).filter(m => !m.checked).map(m => m.text);
+  const currentPhaseNum = project.milestones && project.milestones.find(m => !m.checked) ? project.milestones.find(m => !m.checked).phase : 3;
+  const currentPhase = project.runway.phases ? project.runway.phases[currentPhaseNum - 1] : null;
+
+  const modal = document.getElementById('next-action-modal');
+  const contentEl = document.getElementById('next-action-content');
+  contentEl.textContent = 'Thinking about your project…';
+  modal.style.display = 'flex';
+
+  try {
+    const result = await API.call('next-action', {
+      vision: project.vision,
+      currentPhase: currentPhase ? { title: currentPhase.title, goal: currentPhase.goal, number: currentPhaseNum } : null,
+      completedMilestones: completed,
+      incompleteMilestones: incomplete,
+      totalMilestones: (project.milestones || []).length,
+      completedCount: completed.length,
+      tone: settings.tone || 'direct'
+    });
+    contentEl.textContent = result.recommendation || 'No recommendation returned.';
+  } catch (err) {
+    contentEl.innerHTML = 'Something didn't connect. Your work is still saved — please try again. <br><br><button onclick="askWhatNext()" style="background:none;border:0.5px solid var(--border);padding:6px 16px;border-radius:6px;font-size:12px;cursor:pointer;">Try again</button>';
+  }
+}
 </script>
+
+<!-- What should I do next modal -->
+<div id="next-action-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
+  <div style="background:var(--bg);max-width:480px;width:90%;border-radius:12px;padding:32px;position:relative;">
+    <p style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin:0 0 16px;">What to do next</p>
+    <div id="next-action-content" style="font-family:var(--user-font);font-size:16px;line-height:1.7;font-style:italic;color:var(--text);min-height:60px;"></div>
+    <button onclick="closeNextAction()" style="margin-top:24px;background:none;border:0.5px solid var(--border);padding:8px 20px;border-radius:6px;font-size:13px;cursor:pointer;color:var(--text);">Close</button>
+  </div>
+</div>
 </body>
 </html>
