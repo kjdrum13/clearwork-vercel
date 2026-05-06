@@ -43,7 +43,7 @@ REASONING: (2-3 sentences — specific to their project and idea, no generic adv
 ACTION: (1 concrete next step based on the recommendation)`;
 
     const message = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5',
       max_tokens: 400,
       messages: [{ role: 'user', content: prompt }]
     });

@@ -42,7 +42,7 @@ Generate a phase review with:
 Be specific. Don't be generic. Don't celebrate things they didn't do.`;
 
     const message = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5',
       max_tokens: 600,
       messages: [{ role: 'user', content: prompt }]
     });

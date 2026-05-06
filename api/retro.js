@@ -49,7 +49,7 @@ Generate a 90-day retrospective with:
 Be honest. This is a retrospective, not a celebration. Acknowledge what didn't happen.`;
 
     const message = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5',
       max_tokens: 800,
       messages: [{ role: 'user', content: prompt }]
     });
